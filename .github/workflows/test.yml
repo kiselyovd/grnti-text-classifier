@@ -1,0 +1,54 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    env:
+      HF_HUB_CACHE: ~/.cache/huggingface
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cache HuggingFace models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-cache-${{ hashFiles('pyproject.toml') }}
+          restore-keys: hf-cache-
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Sync deps
+        run: uv sync --all-groups --python ${{ matrix.python-version }}
+
+      - name: Run pytest
+        run: >-
+          uv run --all-groups --python ${{ matrix.python-version }}
+          pytest -m "not slow"
+          --cov=grnti_text_classifier
+          --cov-fail-under=10
+          --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          slug: kiselyovd/grnti-text-classifier
+        continue-on-error: true
