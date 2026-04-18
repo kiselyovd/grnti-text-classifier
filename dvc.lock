@@ -1,0 +1,57 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m grnti_text_classifier.data.prepare --raw data/raw --out 
+      data/processed
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 9e1f8d959033d68079c74a5d2b5a4ceb.dir
+      size: 52863549
+      nfiles: 9
+    - path: src/grnti_text_classifier/data/prepare.py
+      hash: md5
+      md5: 910f9ac12060d4a205dd401f2c3f036a
+      size: 2467
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 06160e7db6a83733376b92c18ceadb63.dir
+      size: 23914844
+      nfiles: 4
+  train:
+    cmd: python -m grnti_text_classifier.training.train
+    deps:
+    - path: configs
+      hash: md5
+      md5: c025da8e90455887e0820c69c3524532.dir
+      size: 678
+      nfiles: 6
+    - path: data/processed
+      hash: md5
+      md5: 06160e7db6a83733376b92c18ceadb63.dir
+      size: 23914844
+      nfiles: 4
+    - path: src/grnti_text_classifier
+      hash: md5
+      md5: 8952381536a5e1ceb77b362e1003a9da.dir
+      size: 27877
+      nfiles: 28
+    params:
+      params.yaml:
+        lr: 2e-05
+        model:
+        name: xlm-roberta-base
+        seed: 42
+        trainer:
+          max_epochs: 30
+    outs:
+    - path: artifacts/checkpoints
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: reports/metrics.json
+      hash: md5
+      md5: 8a80554c91d9fca8acb82f023de02f11
+      size: 3
