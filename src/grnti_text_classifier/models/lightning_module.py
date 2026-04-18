@@ -1,38 +1,92 @@
-"""Lightning module wrappers."""
+"""Lightning wrapper for GRNTI sequence classification models."""
 from __future__ import annotations
 
-import lightning as L
+import lightning
 import torch
-from torch import nn, optim
+import torch.nn.functional as F
+from torch.optim import AdamW
+from transformers import PreTrainedModel, get_linear_schedule_with_warmup
+from torchmetrics.classification import MulticlassF1Score, MulticlassAccuracy
 
-from torchmetrics.classification import MulticlassF1Score
 
+class GRNTIClassifier(lightning.LightningModule):
+    """Lightning module wrapping any HuggingFace sequence-classification model."""
 
-class NLPModule(L.LightningModule):
     def __init__(
         self,
-        model: nn.Module,
-        num_labels: int,
+        model: PreTrainedModel,
+        class_weights: torch.Tensor | None = None,
         lr: float = 2e-5,
-        model_name: str | None = None,
+        weight_decay: float = 0.01,
+        warmup_ratio: float = 0.1,
+        total_steps: int = 1000,
+        num_classes: int = 28,
     ) -> None:
         super().__init__()
         self.model = model
-        self.val_f1 = MulticlassF1Score(num_classes=num_labels, average="macro")
-        self.save_hyperparameters(ignore=["model"])
+        self.class_weights = class_weights
+        self.save_hyperparameters(ignore=["model", "class_weights"])
 
-    def training_step(self, batch, batch_idx: int) -> torch.Tensor:
-        inputs = {k: v for k, v in batch.items() if k not in ("text", "label")}
-        out = self.model(**inputs, labels=batch["label"])
-        self.log("train/loss", out.loss, prog_bar=True, on_epoch=True)
-        return out.loss
+        self.train_f1 = MulticlassF1Score(num_classes=num_classes, average="macro")
+        self.val_f1 = MulticlassF1Score(num_classes=num_classes, average="macro")
+        self.test_f1 = MulticlassF1Score(num_classes=num_classes, average="macro")
 
-    def validation_step(self, batch, batch_idx: int) -> None:
-        inputs = {k: v for k, v in batch.items() if k not in ("text", "label")}
-        out = self.model(**inputs, labels=batch["label"])
-        self.val_f1(out.logits, batch["label"])
-        self.log("val/loss", out.loss, prog_bar=True)
-        self.log("val/f1_macro", self.val_f1, prog_bar=True)
+        self.val_top1 = MulticlassAccuracy(num_classes=num_classes, top_k=1, average="micro")
+        self.val_top5 = MulticlassAccuracy(num_classes=num_classes, top_k=5, average="micro")
+        self.test_top1 = MulticlassAccuracy(num_classes=num_classes, top_k=1, average="micro")
+        self.test_top5 = MulticlassAccuracy(num_classes=num_classes, top_k=5, average="micro")
 
-    def configure_optimizers(self) -> optim.Optimizer:
-        return optim.AdamW(self.parameters(), lr=self.hparams.lr)  # type: ignore[attr-defined]
+    def _step(self, batch: dict) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        out = self.model(
+            input_ids=batch["input_ids"],
+            attention_mask=batch["attention_mask"],
+        )
+        loss = F.cross_entropy(out.logits, batch["labels"], weight=self.class_weights)
+        preds = out.logits.argmax(-1)
+        return loss, out.logits, preds
+
+    def training_step(self, batch: dict, batch_idx: int) -> torch.Tensor:
+        # Lazy device-move for class_weights so constructor stays device-agnostic.
+        if self.class_weights is not None and self.class_weights.device != batch["labels"].device:
+            self.class_weights = self.class_weights.to(batch["labels"].device)
+
+        loss, logits, preds = self._step(batch)
+        self.train_f1(preds, batch["labels"])
+        self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log("train/macro_f1", self.train_f1, on_step=False, on_epoch=True, prog_bar=True)
+        return loss
+
+    def validation_step(self, batch: dict, batch_idx: int) -> None:
+        loss, logits, preds = self._step(batch)
+        self.val_f1(preds, batch["labels"])
+        self.val_top1(logits, batch["labels"])
+        self.val_top5(logits, batch["labels"])
+        self.log("val/loss", loss, prog_bar=True)
+        self.log("val/macro_f1", self.val_f1, prog_bar=True)
+        self.log("val/top1_acc", self.val_top1, prog_bar=True)
+        self.log("val/top5_acc", self.val_top5, prog_bar=True)
+
+    def test_step(self, batch: dict, batch_idx: int) -> None:
+        loss, logits, preds = self._step(batch)
+        self.test_f1(preds, batch["labels"])
+        self.test_top1(logits, batch["labels"])
+        self.test_top5(logits, batch["labels"])
+        self.log("test/loss", loss)
+        self.log("test/macro_f1", self.test_f1)
+        self.log("test/top1_acc", self.test_top1)
+        self.log("test/top5_acc", self.test_top5)
+
+    def configure_optimizers(self):  # type: ignore[override]
+        opt = AdamW(
+            self.model.parameters(),
+            lr=self.hparams.lr,  # type: ignore[attr-defined]
+            weight_decay=self.hparams.weight_decay,  # type: ignore[attr-defined]
+        )
+        total_steps: int = self.hparams.total_steps  # type: ignore[attr-defined]
+        warmup_steps = int(total_steps * self.hparams.warmup_ratio)  # type: ignore[attr-defined]
+        sch = get_linear_schedule_with_warmup(
+            opt,
+            num_warmup_steps=warmup_steps,
+            num_training_steps=total_steps,
+        )
+        return {"optimizer": opt, "lr_scheduler": {"scheduler": sch, "interval": "step"}}

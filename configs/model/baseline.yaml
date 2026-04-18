@@ -1,0 +1,2 @@
+_target_: grnti_text_classifier.models.factory.build_baseline
+num_labels: 28
