@@ -26,3 +26,7 @@ data/processed/*
 !data/processed/.gitignore
 .env
 .env.local
+
+# Local training artefacts + mkdocs build output
+reports/
+site/

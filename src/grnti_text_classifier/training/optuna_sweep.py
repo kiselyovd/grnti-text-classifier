@@ -83,8 +83,18 @@ def run_sweep(
 
         df = pd.read_csv(metrics_csv)
         if "val/macro_f1" not in df.columns:
-            return 0.0
-        best_f1 = float(df["val/macro_f1"].dropna().max())
+            best_f1 = 0.0
+        else:
+            best_f1 = float(df["val/macro_f1"].dropna().max())
+
+        import gc
+
+        import torch
+
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.reset_peak_memory_stats()
         return best_f1
 
     study = optuna.create_study(
