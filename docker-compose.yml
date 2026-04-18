@@ -1,22 +1,25 @@
 services:
-api:
+  api:
     build:
       context: .
-      target: serving
-    image: grnti-text-classifier-serving:local
+    image: grnti-text-classifier:dev
     ports:
       - "8000:8000"
     volumes:
-      - ./artifacts:/models:ro
+      - ./artifacts:/app/artifacts
     environment:
-      MODEL_PATH: /models/best.ckpt
+      GRNTI_MAIN_DIR: /app/artifacts/main/hf
+      GRNTI_BASELINE_DIR: /app/artifacts/baseline/hf
+      GRNTI_LABEL_ENCODER: /app/data/processed/label_encoder.json
+      GRNTI_MODEL_VERSION: dev
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
       interval: 30s
       timeout: 5s
       retries: 3
-mlflow:
+
+  mlflow:
     image: ghcr.io/mlflow/mlflow:v2.11.3
     ports:
       - "5000:5000"
