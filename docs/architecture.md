@@ -4,13 +4,20 @@ Two independent `save_pretrained` artefacts sharing the same `{top1_label, top1_
 
 ```mermaid
 flowchart LR
-    A["data/raw/*.jsonl<br/>HF snapshot_download"] -->|prepare.py| B["data/processed/<br/>train/val/test.parquet + label_encoder.json"]
-    B -->|GRNTIDataModule| C["XLM-R tokenizer<br/>padding=max_length<br/>truncation=True"]
-    C --> D["GRNTIClassifier<br/>AdamW + linear warmup+decay<br/>bf16-mixed on CUDA"]
-    D -->|train_one| E["artifacts/{main,baseline}/hf/<br/>save_pretrained"]
-    E -->|evaluate.py| F["reports/metrics.json<br/>+ confusion_matrix.png<br/>+ metrics_summary.json"]
-    E -.->|publish_to_hf.py| G["HF Hub: kiselyovd/grnti-text-classifier"]
-    E -.->|"FastAPI /classify"| H["JSON: top-1 + top-5 + probs"]
+    A["data/raw/*.jsonl<br/>HF snapshot_download"]:::external -->|prepare.py| B["data/processed/<br/>train/val/test.parquet<br/>+ label_encoder.json"]:::data
+    B -->|GRNTIDataModule| C["XLM-R tokenizer<br/>padding=max_length<br/>truncation=True"]:::code
+    C --> D["GRNTIClassifier<br/>AdamW + linear warmup+decay<br/>bf16-mixed on CUDA"]:::model
+    D -->|train_one| E["artifacts/{main,baseline}/hf/<br/>save_pretrained"]:::artifact
+    E -->|evaluate.py| F["reports/metrics.json<br/>+ confusion_matrix.png<br/>+ metrics_summary.json"]:::artifact
+    E -.->|publish_to_hf.py| G["HF Hub<br/>kiselyovd/grnti-text-classifier"]:::external
+    E -.->|"FastAPI /classify"| H["JSON<br/>top-1 + top-5 + probs"]:::serve
+
+    classDef external fill:#E0F2F1,stroke:#00796B,color:#004D40
+    classDef data fill:#B2DFDB,stroke:#00796B,color:#004D40
+    classDef code fill:#80CBC4,stroke:#00695C,color:#004D40
+    classDef model fill:#4DB6AC,stroke:#004D40,color:#fff
+    classDef artifact fill:#26A69A,stroke:#004D40,color:#fff
+    classDef serve fill:#00897B,stroke:#004D40,color:#fff
 ```
 
 ## Data flow
