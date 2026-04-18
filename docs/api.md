@@ -18,7 +18,6 @@ Auto-generated reference for the `grnti_text_classifier` package via [mkdocstrin
 
 ::: grnti_text_classifier.models.factory
 ::: grnti_text_classifier.models.lightning_module
-::: grnti_text_classifier.models.metrics
 
 ## Training
 
