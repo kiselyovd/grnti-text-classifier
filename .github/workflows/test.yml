@@ -46,9 +46,70 @@ jobs:
           --cov-fail-under=10
           --cov-report=xml
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+      - name: Upload coverage artifact
+        if: matrix.python-version == '3.13'
+        uses: actions/upload-artifact@v4
         with:
-          files: ./coverage.xml
-          slug: kiselyovd/grnti-text-classifier
-        continue-on-error: true
+          name: coverage-xml
+          path: coverage.xml
+          retention-days: 1
+
+  coverage-badge:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-xml
+      - name: Generate shields endpoint JSON
+        run: |
+          python - <<'PY'
+          import json, xml.etree.ElementTree as ET
+          rate = float(ET.parse("coverage.xml").getroot().get("line-rate"))
+          pct = round(rate * 100)
+          if pct >= 90:
+              color = "brightgreen"
+          elif pct >= 75:
+              color = "green"
+          elif pct >= 60:
+              color = "yellowgreen"
+          elif pct >= 40:
+              color = "yellow"
+          elif pct >= 20:
+              color = "orange"
+          else:
+              color = "red"
+          with open("coverage.json", "w") as f:
+              json.dump(
+                  {"schemaVersion": 1, "label": "coverage", "message": f"{pct}%", "color": color},
+                  f,
+              )
+          PY
+      - name: Publish to badges branch (self-bootstrap if missing)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir /tmp/badges
+          cd /tmp/badges
+          git init -q -b badges
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          if git fetch --depth=1 origin badges 2>/dev/null; then
+            git reset --hard origin/badges
+          else
+            echo "Bootstrapping badges branch"
+            printf 'Badge artifacts for shields.io endpoint. Do not edit manually — CI updates this branch.\n' > README.md
+            git add README.md
+          fi
+          cp "$GITHUB_WORKSPACE/coverage.json" coverage.json
+          git add coverage.json
+          if git diff --cached --quiet; then
+            echo "No badge changes"
+            exit 0
+          fi
+          git commit -m "chore(badge): update coverage [skip ci]"
+          git push origin badges

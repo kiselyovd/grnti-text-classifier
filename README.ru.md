@@ -1,10 +1,11 @@
 # grnti-text-classifier
 
-[![CI](https://github.com/kiselyovd/grnti-text-classifier/actions/workflows/test.yml/badge.svg)](https://github.com/kiselyovd/grnti-text-classifier/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/kiselyovd/grnti-text-classifier/branch/main/graph/badge.svg)](https://codecov.io/gh/kiselyovd/grnti-text-classifier)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
-[![HF Hub](https://img.shields.io/badge/HF_Hub-kiselyovd/grnti--text--classifier-yellow)](https://huggingface.co/kiselyovd/grnti-text-classifier)
+[![CI](https://img.shields.io/github/actions/workflow/status/kiselyovd/grnti-text-classifier/test.yml?branch=main&style=for-the-badge&label=CI&logo=github)](https://github.com/kiselyovd/grnti-text-classifier/actions/workflows/test.yml)
+[![Docs](https://img.shields.io/badge/docs-mkdocs-526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://kiselyovd.github.io/grnti-text-classifier/)
+[![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/kiselyovd/grnti-text-classifier/badges/coverage.json&style=for-the-badge&logo=pytest&logoColor=white)](https://github.com/kiselyovd/grnti-text-classifier/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![HF Hub](https://img.shields.io/badge/🤗%20HF%20Hub-model-FFD21E?style=for-the-badge)](https://huggingface.co/kiselyovd/grnti-text-classifier)
 
 Промышленный классификатор русских научных текстов по 28 разделам ГРНТИ (Государственный рубрикатор научно-технической информации). Основная модель — **XLM-RoBERTa-base** (многоязычный трансформер, дообученный на русских аннотациях); baseline — **ruBERT-base-cased** (одноязычный BERT). Обе модели конфигурируются через Hydra, настраиваются через Optuna, оцениваются по top-1 / top-5 accuracy и macro / weighted F1, и обслуживаются через FastAPI (`/classify`).
 
