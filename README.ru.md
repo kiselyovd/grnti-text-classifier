@@ -26,14 +26,16 @@
 
 ## Результаты
 
-Заполняется из `reports/metrics_summary.json` после завершения запуска v0.1.0 (Task 18).
+Тестовая выборка: 2 772 аннотации по 28 рубрикам ГРНТИ.
 
 | Модель | Top-1 accuracy | Top-5 accuracy | Macro F1 | Weighted F1 |
 |--------|---------------:|---------------:|---------:|------------:|
-| XLM-RoBERTa-base (основная) | — | — | — | — |
-| ruBERT-base-cased (baseline) | — | — | — | — |
+| **XLM-RoBERTa-base (основная)** | **72,4%** | **96,8%** | **72,3%** | **72,3%** |
+| ruBERT-base-cased (baseline) | 72,9% | 95,9% | 72,8% | 72,8% |
 
-Test set n = 2 772.
+Лучший триал Optuna (20 попыток по val macro-F1): `lr=3,1e-5, weight_decay=0,012, warmup_ratio=0,147` → val macro-F1 = 73,1%.
+
+Baseline чуть впереди по top-1, основная модель лучше на +0,9 п.п. по top-5 — многоязычный pre-training XLM-R даёт более точный rerank top-k, а моноязычная ruBERT слегка выигрывает на argmax. Обе модели опубликованы на HF Hub с единым model card.
 
 ## Быстрый старт
 

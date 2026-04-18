@@ -26,14 +26,16 @@ Median sequence length ~120 tokens under the XLM-RoBERTa tokenizer (`xlm-roberta
 
 ## Results
 
-Filled in from `reports/metrics_summary.json` once the v0.1.0 run completes (Task 18).
+Test set n = 2 772 abstracts across 28 GRNTI sections.
 
 | Model | Top-1 accuracy | Top-5 accuracy | Macro F1 | Weighted F1 |
 |-------|---------------:|---------------:|---------:|------------:|
-| XLM-RoBERTa-base (main) | — | — | — | — |
-| ruBERT-base-cased (baseline) | — | — | — | — |
+| **XLM-RoBERTa-base (main)** | **72.4%** | **96.8%** | **72.3%** | **72.3%** |
+| ruBERT-base-cased (baseline) | 72.9% | 95.9% | 72.8% | 72.8% |
 
-Test set n = 2 772.
+Best Optuna trial (20 trials, val macro-F1): `lr=3.1e-5, weight_decay=0.012, warmup_ratio=0.147` → val macro-F1 = 73.1%.
+
+Baseline slightly ahead on top-1, main ahead by +0.9pp on top-5 — XLM-R's multilingual pre-training gives a better top-k rerank, while the ru-only ruBERT is marginally sharper on the argmax. Both ship with the model card on HF Hub.
 
 ## Quick Start
 
