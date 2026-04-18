@@ -5,3 +5,31 @@ Auto-generated reference for the `grnti_text_classifier` package via [mkdocstrin
 ## Package root
 
 ::: grnti_text_classifier
+
+## Data
+
+::: grnti_text_classifier.data
+
+## Models
+
+::: grnti_text_classifier.models
+
+## Training
+
+::: grnti_text_classifier.training
+
+## Evaluation
+
+::: grnti_text_classifier.evaluation
+
+## Inference
+
+::: grnti_text_classifier.inference
+
+## Serving
+
+::: grnti_text_classifier.serving
+
+## Utilities
+
+::: grnti_text_classifier.utils
