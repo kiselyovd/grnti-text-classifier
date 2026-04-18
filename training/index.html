@@ -421,6 +421,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -437,6 +455,102 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hydra-configuration-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hydra configuration layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optuna-sweep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optuna sweep
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rtx-3080-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RTX 3080 notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hf-mirror-runbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HF mirror runbook
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -516,6 +630,91 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hydra-configuration-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hydra configuration layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optuna-sweep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optuna sweep
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rtx-3080-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RTX 3080 notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hf-mirror-runbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HF mirror runbook
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -535,9 +734,124 @@
 
 
 <h1 id="training">Training</h1>
-<div class="highlight"><pre><span></span><code>make<span class="w"> </span>data
-make<span class="w"> </span>train
+<p>End-to-end training is orchestrated by <code>scripts/train_all.py</code>, which runs the baseline (ruBERT) and main model (XLM-RoBERTa) in sequence, produces evaluation metrics, a confusion matrix, and a <code>metrics_summary.json</code>. GPU is recommended; the main model will fall back to CPU but training time increases ~10×.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--all-groups
+bash<span class="w"> </span>scripts/sync_data.sh
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>grnti_text_classifier.data.prepare<span class="w"> </span>--raw<span class="w"> </span>data/raw<span class="w"> </span>--out<span class="w"> </span>data/processed
 </code></pre></div>
+<p><code>sync_data.sh</code> calls <code>snapshot_download</code> for <code>ai-forever/ru-scibench-grnti-classification</code>. <code>prepare.py</code> writes <code>train.parquet</code>, <code>val.parquet</code>, <code>test.parquet</code>, and <code>label_encoder.json</code> under <code>data/processed/</code>.</p>
+<h2 id="commands">Commands</h2>
+<p>Full pipeline (baseline + main + evaluation):</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/train_all.py
+</code></pre></div>
+<p>Individual stages:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Main model only (XLM-RoBERTa-base)</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>grnti_text_classifier.training.train<span class="w"> </span><span class="nv">model</span><span class="o">=</span>main
+
+<span class="c1"># Baseline only (ruBERT-base-cased)</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>grnti_text_classifier.training.train<span class="w"> </span><span class="nv">model</span><span class="o">=</span>baseline
+
+<span class="c1"># Optuna sweep (10 trials, 3 epochs each)</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>grnti_text_classifier.training.sweep<span class="w"> </span><span class="nv">model</span><span class="o">=</span>main
+
+<span class="c1"># Evaluation (top-k accuracy, F1, confusion matrix)</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>grnti_text_classifier.evaluation.evaluate
+</code></pre></div>
+<h2 id="hydra-configuration-layout">Hydra configuration layout</h2>
+<div class="highlight"><pre><span></span><code>configs/
+├── train.yaml          # top-level: data paths, trainer, logger, seed
+└── model/
+    ├── main.yaml       # XLM-RoBERTa-base: lr, batch_size, max_length, warmup_ratio
+    └── baseline.yaml   # ruBERT-base-cased: same schema, different defaults
+</code></pre></div>
+<p>Override any parameter from the CLI without editing YAML:</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>grnti_text_classifier.training.train<span class="w"> </span><span class="nv">model</span><span class="o">=</span>main<span class="w"> </span>model.lr<span class="o">=</span>3e-5<span class="w"> </span>trainer.max_epochs<span class="o">=</span><span class="m">5</span>
+</code></pre></div>
+<h2 id="optuna-sweep">Optuna sweep</h2>
+<p><code>training.sweep</code> runs <strong>10 trials × 3 epochs</strong> each with the TPE sampler (seed=42). Search space:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Distribution</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lr</code></td>
+<td>log-uniform</td>
+<td>1e-5 – 5e-5</td>
+</tr>
+<tr>
+<td><code>weight_decay</code></td>
+<td>log-uniform</td>
+<td>1e-4 – 1e-1</td>
+</tr>
+<tr>
+<td><code>warmup_ratio</code></td>
+<td>uniform</td>
+<td>0.0 – 0.15</td>
+</tr>
+</tbody>
+</table>
+<p>The best trial is automatically written to <code>artifacts/best_params.json</code> and used as the starting point for the final full-epoch training run.</p>
+<h2 id="rtx-3080-notes">RTX 3080 notes</h2>
+<p>Reference hardware for the v0.1.0 run: RTX 3080 (10 GB VRAM), 32 GB RAM, Ubuntu 22.04.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>precision</code></td>
+<td><code>bf16-mixed</code></td>
+</tr>
+<tr>
+<td><code>batch_size</code></td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>max_length</code></td>
+<td>256</td>
+</tr>
+<tr>
+<td><code>gradient_clip_val</code></td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Estimated wall time (XLM-R, 5 epochs)</td>
+<td>~45–60 min</td>
+</tr>
+<tr>
+<td>Estimated wall time (ruBERT, 5 epochs)</td>
+<td>~30–40 min</td>
+</tr>
+</tbody>
+</table>
+<p><code>bf16-mixed</code> requires Ampere or newer (RTX 30xx / A-series). On older CUDA GPUs set <code>precision=16-mixed</code>; on CPU omit the flag entirely.</p>
+<h2 id="outputs">Outputs</h2>
+<ul>
+<li><code>artifacts/main/hf/</code> — XLM-RoBERTa <code>save_pretrained</code> snapshot (model + tokenizer).</li>
+<li><code>artifacts/baseline/hf/</code> — ruBERT <code>save_pretrained</code> snapshot.</li>
+<li><code>artifacts/main/logs/version_0/metrics.csv</code> — CSVLogger epoch-level metrics (loss, top1_acc, top5_acc, f1_macro).</li>
+<li><code>reports/metrics.json</code> — per-class precision/recall/F1 on test set.</li>
+<li><code>reports/metrics_summary.json</code> — top-1/top-5 accuracy + macro/weighted F1 summary for both models.</li>
+<li><code>reports/confusion_matrix.png</code> — 28×28 normalised confusion matrix for the main model.</li>
+</ul>
+<h2 id="hf-mirror-runbook">HF mirror runbook</h2>
+<p>Once training completes and artefacts are validated, publish to the HF Hub:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Ensure HUGGING_FACE_HUB_TOKEN is set (or run `huggingface-cli login`)</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/publish_to_hf.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--main-dir<span class="w"> </span>artifacts/main/hf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--baseline-dir<span class="w"> </span>artifacts/baseline/hf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--repo-id<span class="w"> </span>kiselyovd/grnti-text-classifier
+</code></pre></div>
+<p>The script calls <code>push_to_hub</code> for the main model and attaches the model card generated in Task 17. The baseline is pushed to a separate branch <code>baseline</code> within the same repo.</p>
 
 
 

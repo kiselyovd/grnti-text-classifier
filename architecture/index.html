@@ -394,6 +394,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -410,6 +428,69 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-xlm-roberta-base-over-rubert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why XLM-RoBERTa-base over ruBERT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inverse-frequency-class-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inverse-frequency class weights
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hf-native-save_pretrained" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HF-native save_pretrained
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -516,6 +597,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-xlm-roberta-base-over-rubert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why XLM-RoBERTa-base over ruBERT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inverse-frequency-class-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inverse-frequency class weights
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hf-native-save_pretrained" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HF-native save_pretrained
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -535,7 +668,23 @@
 
 
 <h1 id="architecture">Architecture</h1>
-<p>Describe the data flow, model choice, and key design decisions.</p>
+<p>Two independent <code>save_pretrained</code> artefacts sharing the same <code>{top1_label, top1_prob, top5, truncated, input_length_tokens, request_id, model_version}</code> contract.</p>
+<pre class="mermaid"><code>flowchart LR
+    A["data/raw/*.jsonl&lt;br/&gt;HF snapshot_download"] --&gt;|prepare.py| B["data/processed/&lt;br/&gt;train/val/test.parquet + label_encoder.json"]
+    B --&gt;|GRNTIDataModule| C["XLM-R tokenizer&lt;br/&gt;padding=max_length&lt;br/&gt;truncation=True"]
+    C --&gt; D["GRNTIClassifier&lt;br/&gt;AdamW + linear warmup+decay&lt;br/&gt;bf16-mixed on CUDA"]
+    D --&gt;|train_one| E["artifacts/{main,baseline}/hf/&lt;br/&gt;save_pretrained"]
+    E --&gt;|evaluate.py| F["reports/metrics.json&lt;br/&gt;+ confusion_matrix.png&lt;br/&gt;+ metrics_summary.json"]
+    E -.-&gt;|publish_to_hf.py| G["HF Hub: kiselyovd/grnti-text-classifier"]
+    E -.-&gt;|"FastAPI /classify"| H["JSON: top-1 + top-5 + probs"]</code></pre>
+<h2 id="data-flow">Data flow</h2>
+<p><code>scripts/sync_data.sh</code> calls <code>snapshot_download</code> from the HF Hub to pull <code>ai-forever/ru-scibench-grnti-classification</code> into <code>data/raw/</code> as JSONL shards. <code>grnti_text_classifier.data.prepare</code> reads those shards, fits a <code>LabelEncoder</code> over the 28 GRNTI top-level class codes, writes stratified <code>train/val/test.parquet</code> splits under <code>data/processed/</code>, and serialises the encoder to <code>data/processed/label_encoder.json</code>. The <code>GRNTIDataModule</code> wraps those Parquet files: it tokenises on-the-fly with the HF <code>AutoTokenizer</code> (<code>padding="max_length"</code>, <code>truncation=True</code>, <code>max_length=256</code>), returning <code>input_ids</code>, <code>attention_mask</code>, and <code>labels</code> tensors.</p>
+<h2 id="why-xlm-roberta-base-over-rubert">Why XLM-RoBERTa-base over ruBERT</h2>
+<p>XLM-RoBERTa-base was pre-trained on 2.5 TB of CommonCrawl covering 100 languages including Russian. Its sub-word vocabulary (250 k sentencepiece tokens) achieves much lower out-of-vocabulary rates on Russian scientific terminology than the 120 k WordPiece vocabulary of ruBERT-base-cased. In practice this translates to longer effective context per 256-token window and better transfer on low-resource GRNTI sections. ruBERT-base-cased is retained as a single-language baseline: it is lighter, faster to fine-tune, and provides a meaningful reference point for any XLM-R gains.</p>
+<h2 id="inverse-frequency-class-weights">Inverse-frequency class weights</h2>
+<p>The ru-scibench-grnti-classification dataset is designed to be class-balanced, but minor residual imbalances remain across 28 sections. <code>train_one</code> passes <code>class_weights</code> (computed per-batch from inverse normalised class frequencies on the train split) into <code>CrossEntropyLoss</code>. This has negligible effect on top-1 accuracy but meaningfully protects macro F1: without weighting the rarest classes tend to be under-penalised, dragging the macro average below the weighted average.</p>
+<h2 id="hf-native-save_pretrained">HF-native <code>save_pretrained</code></h2>
+<p>Both models are serialised via the standard <code>PreTrainedModel.save_pretrained</code> / <code>tokenizer.save_pretrained</code> pattern into <code>artifacts/{main,baseline}/hf/</code>. This means any downstream consumer can load them with <code>AutoModelForSequenceClassification.from_pretrained(repo_id)</code> — zero extra config, no custom unpickling, and fully compatible with the HF Hub widget system for live inference demos on the model card.</p>
 
 
 

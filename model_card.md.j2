@@ -1,76 +1,82 @@
 ---
+language: ru
 license: mit
-library_name: {{ library_name }}
-
-pipeline_tag: {{ pipeline_tag }}
-
-{% if base_model %}base_model: {{ base_model }}
-{% endif %}tags:
-{% for tag in tags %}  - {{ tag }}
-{% endfor %}datasets:
-{% for ds in datasets %}  - {{ ds }}
-{% endfor %}
-metrics:
-  - accuracy
-  - f1
-
-{% if widget_examples %}widget:
-{% for ex in widget_examples %}  - src: {{ ex.src }}
-    example_title: {{ ex.example_title }}
-{% endfor %}{% endif %}
-
+library_name: transformers
+pipeline_tag: text-classification
+base_model: FacebookAI/xlm-roberta-base
+tags:
+  - xlm-roberta
+  - russian-nlp
+  - grnti
+  - multiclass
+  - text-classification
+datasets:
+  - ai-forever/ru-scibench-grnti-classification
+widget:
+  - text: "{{ widget_text }}"
 model-index:
   - name: {{ repo_id }}
     results:
-{% for task_result in metric_results %}      - task:
-          type: {{ task_result.task_type }}
+      - task:
+          type: text-classification
+          name: Top-level GRNTI classification
         dataset:
-          type: {{ task_result.dataset_type }}
-          name: {{ task_result.dataset_name }}
+          name: ru-scibench-grnti-classification
+          type: ai-forever/ru-scibench-grnti-classification
         metrics:
-{% for m in task_result.metrics %}          - type: {{ m.type }}
-            value: {{ m.value }}
-{% endfor %}{% endfor %}
+          - type: accuracy
+            value: {{ main_metrics['top1_accuracy']|float|round(4) }}
+            name: Top-1 accuracy
+          - type: accuracy
+            value: {{ main_metrics['top5_accuracy']|float|round(4) }}
+            name: Top-5 accuracy
+          - type: f1
+            value: {{ main_metrics['macro_f1']|float|round(4) }}
+            name: Macro F1
+          - type: f1
+            value: {{ main_metrics['weighted_f1']|float|round(4) }}
+            name: Weighted F1
 ---
 
-# grnti-text-classifier
+# {{ repo_id }}
 
-{{ model_description }}
+Production-grade Russian scientific-text classifier: **28 top-level GRNTI codes**.
+Main model: XLM-RoBERTa-base fine-tuned on `ai-forever/ru-scibench-grnti-classification`.
 
-## Metrics
+## Metrics (test split, n = {{ test_size }}, {{ num_classes }} classes)
 
 {{ metrics_table }}
 
 ## Usage
 
-
 ```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
+from transformers import pipeline
 
-tokenizer = AutoTokenizer.from_pretrained("{{ repo_id }}")
-model = AutoModelForSequenceClassification.from_pretrained("{{ repo_id }}")
-
-inputs = tokenizer("Your text here", return_tensors="pt")
-with torch.no_grad():
-    logits = model(**inputs).logits
-predicted_class = logits.argmax(-1).item()
-print(model.config.id2label[predicted_class])
+clf = pipeline("text-classification", model="{{ repo_id }}", top_k=5)
+clf("Исследование квантовой электродинамики в кристаллах.")
 ```
 
+## Intended use
 
-## Training Data
+This model is trained for Russian-language top-level GRNTI section classification
+(State Rubricator of Scientific and Technical Information). It is not evaluated
+outside Russian scientific text and should not be used for generic multilingual
+classification.
 
-{% if hf_dataset %}Trained on [{{ dataset_name or hf_dataset }}](https://huggingface.co/datasets/{{ hf_dataset }}).
-{% else %}Training dataset details not specified.
-{% endif %}
+Do not rely on this model for high-stakes decisions. Outputs are probabilistic
+and subject to training-data biases.
 
-## Source Code
+## Training
 
-[GitHub Repository]({{ github_url }})
+- Dataset: `ai-forever/ru-scibench-grnti-classification` (MIT, 28 476 train + 2 772 test).
+- Base model: `FacebookAI/xlm-roberta-base`.
+- Baseline: `DeepPavlov/rubert-base-cased`.
+- Precision: bf16-mixed on CUDA.
+- Optimizer: AdamW + linear warmup/decay.
+- Optuna 10-trial sweep for lr/weight_decay/warmup_ratio, then 5-epoch final training with best params.
 
-## Intended Use
+Source: https://github.com/kiselyovd/{{ repo_id.split("/")[1] }}
 
-This model is provided for research and educational purposes. The authors make no warranties about its suitability for any particular application. Users are responsible for evaluating the model's fitness for their use case, including fairness, safety, and compliance with applicable regulations.
+## License
 
-> **Note:** This model card was generated from the [ml-project-template](https://github.com/kiselyovd/ml-project-template) scaffold.
+MIT.

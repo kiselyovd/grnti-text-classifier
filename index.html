@@ -365,6 +365,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
@@ -381,6 +399,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        At a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intended-use-and-disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intended use and disclaimer
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -514,6 +606,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        At a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intended-use-and-disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intended use and disclaimer
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -533,8 +688,64 @@
 
 
 <h1 id="grnti-text-classifier">grnti-text-classifier</h1>
-<p>Production-grade Russian multi-class text classifier (GRNTI).</p>
-<p>Source: <a href="https://github.com/kiselyovd/grnti-text-classifier">GitHub</a>.</p>
+<p>Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model <strong>XLM-RoBERTa-base</strong>, fine-tuned with PyTorch Lightning on Russian research abstracts; baseline <strong>ruBERT-base-cased</strong>. Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, served by FastAPI as <code>/classify</code>.</p>
+<blockquote>
+<p><strong>Part of the <a href="https://github.com/kiselyovd#ml-portfolio">kiselyovd ML portfolio</a></strong> — production-grade ML projects sharing one <a href="https://github.com/kiselyovd/ml-project-template">cookiecutter template</a>.</p>
+</blockquote>
+<h2 id="at-a-glance">At a glance</h2>
+<ul>
+<li><strong>Dataset:</strong> <a href="https://huggingface.co/datasets/ai-forever/ru-scibench-grnti-classification">ai-forever/ru-scibench-grnti-classification</a> — 28 476 train / 2 772 test, 28 balanced GRNTI classes, median ~120 tokens under XLM-R tokenizer.</li>
+<li><strong>Main model:</strong> XLM-RoBERTa-base, AdamW + linear warmup+decay, bf16-mixed on CUDA, inverse-frequency class weights.</li>
+<li><strong>Baseline:</strong> ruBERT-base-cased — single-language BERT, same training loop, gives a strong Russian-only reference point.</li>
+<li><strong>Stack:</strong> Python 3.12 / 3.13 · PyTorch Lightning · Transformers · Optuna · FastAPI · Hydra · DVC · MkDocs Material · uv.</li>
+<li><strong>Serving:</strong> FastAPI <code>/classify</code> returns <code>{top1_label, top1_prob, top5, truncated, input_length_tokens, request_id, model_version}</code>.</li>
+</ul>
+<h2 id="results">Results</h2>
+<p>Filled in from <code>reports/metrics_summary.json</code> once the v0.1.0 run completes (Task 18).</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th style="text-align: right;">Top-1 accuracy</th>
+<th style="text-align: right;">Top-5 accuracy</th>
+<th style="text-align: right;">Macro F1</th>
+<th style="text-align: right;">Weighted F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XLM-RoBERTa-base (main)</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>ruBERT-base-cased (baseline)</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<p>Test set n = 2 772.</p>
+<h2 id="navigation">Navigation</h2>
+<ul>
+<li><a href="architecture/">Architecture</a> — data flow, mermaid diagram, and main-vs-baseline design decisions.</li>
+<li><a href="training/">Training</a> — CLI commands, Hydra config layout, Optuna sweep notes, RTX 3080 timing, HF publish runbook.</li>
+<li><a href="serving/">Serving</a> — <code>/classify</code> endpoint contract, Pydantic schemas, curl examples, environment variables.</li>
+<li><a href="api/">API reference</a> — mkdocstrings-generated reference for the <code>grnti_text_classifier</code> package.</li>
+</ul>
+<h2 id="links">Links</h2>
+<ul>
+<li>GitHub: <a href="https://github.com/kiselyovd/grnti-text-classifier">kiselyovd/grnti-text-classifier</a></li>
+<li>Hugging Face model: <a href="https://huggingface.co/kiselyovd/grnti-text-classifier">kiselyovd/grnti-text-classifier</a></li>
+<li>Russian README: <a href="https://github.com/kiselyovd/grnti-text-classifier/blob/main/README.ru.md">README.ru.md</a></li>
+<li>Template: <a href="https://github.com/kiselyovd/ml-project-template">kiselyovd/ml-project-template</a></li>
+</ul>
+<h2 id="intended-use-and-disclaimer">Intended use and disclaimer</h2>
+<p>This model is a <strong>portfolio/research demo</strong> trained on the public ru-scibench-grnti-classification dataset. It is intended for educational purposes, ML-engineering review, and comparison against other baselines on the same dataset. Predictions should not be used as the sole basis for classifying real scientific publications in production systems without human review and domain validation.</p>
 
 
 
