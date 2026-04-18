@@ -1,5 +1,8 @@
 """Metrics computation for classification scoring."""
+
 from __future__ import annotations
+
+from typing import Any
 
 import numpy as np
 from sklearn.metrics import f1_score, top_k_accuracy_score
@@ -7,9 +10,9 @@ from sklearn.metrics import f1_score, top_k_accuracy_score
 
 def compute_metrics(
     y_true: np.ndarray,
-    logits: "np.ndarray | object",
+    logits: np.ndarray | object,
     num_classes: int,
-) -> dict:
+) -> dict[str, Any]:
     """Return top-1/top-5 accuracy, macro/weighted F1, num_classes, and n.
 
     Parameters
@@ -37,9 +40,7 @@ def compute_metrics(
     preds = logits.argmax(axis=-1)
 
     top1 = float(top_k_accuracy_score(y_true, logits, k=1, labels=labels))
-    top5 = float(
-        top_k_accuracy_score(y_true, logits, k=min(5, num_classes), labels=labels)
-    )
+    top5 = float(top_k_accuracy_score(y_true, logits, k=min(5, num_classes), labels=labels))
     macro_f1 = float(f1_score(y_true, preds, average="macro", zero_division=0))
     weighted_f1 = float(f1_score(y_true, preds, average="weighted", zero_division=0))
 
@@ -49,5 +50,5 @@ def compute_metrics(
         "macro_f1": macro_f1,
         "weighted_f1": weighted_f1,
         "num_classes": int(num_classes),
-        "n": int(len(y_true)),
+        "n": len(y_true),
     }

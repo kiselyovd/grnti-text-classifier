@@ -1,4 +1,5 @@
 """CLI: score a saved HF checkpoint on a processed parquet split."""
+
 from __future__ import annotations
 
 import argparse

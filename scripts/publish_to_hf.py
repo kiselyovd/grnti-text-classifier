@@ -8,6 +8,7 @@ import os
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Any
 
 from huggingface_hub import HfApi
 from jinja2 import Environment, FileSystemLoader
@@ -17,7 +18,7 @@ from jinja2 import Environment, FileSystemLoader
 # ---------------------------------------------------------------------------
 
 
-def _format_metrics(metrics: dict) -> str:
+def _format_metrics(metrics: dict[str, Any]) -> str:
     if not metrics:
         return "TBD"
     scalar = {k: v for k, v in metrics.items() if isinstance(v, (int, float, str))}
@@ -49,7 +50,7 @@ def _metric_results_from(
     pipeline_tag: str,
     dataset_name: str,
     dataset_type: str,
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """Read metrics.json and return model-index metric_results structure."""
     path = Path(metrics_json_path)
     if not path.exists():
@@ -80,9 +81,9 @@ def _metric_results_from(
 
 def render_model_card(
     template_path: Path,
-    metrics: dict,
+    metrics: dict[str, Any],
     out_path: Path,
-    **extra,
+    **extra: Any,
 ) -> None:
     env = Environment(
         loader=FileSystemLoader(str(template_path.parent)),
@@ -160,12 +161,12 @@ def main() -> None:
     if not artifacts_dir.exists():
         raise SystemExit(f"Artifacts dir not found: {artifacts_dir}")
 
-    metrics: dict = {}
+    metrics: dict[str, Any] = {}
     metrics_path = Path(args.metrics)
     if metrics_path.exists():
         metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
 
-    widget_examples: list[dict] = []
+    widget_examples: list[dict[str, Any]] = []
     if args.widget_sources:
         widget_dir = Path(args.widget_sources)
         if widget_dir.is_dir():
@@ -211,10 +212,7 @@ def main() -> None:
             metrics=metrics,
             out_path=tmp_path / "README.md",
             model_description="Production-grade Russian multi-class text classifier (GRNTI).",
-            github_url=(
-                "https://github.com/"
-                "kiselyovd/grnti-text-classifier"
-            ),
+            github_url=("https://github.com/kiselyovd/grnti-text-classifier"),
             repo_id=args.repo_id,
             base_model=args.base_model,
             library_name=args.library_name,

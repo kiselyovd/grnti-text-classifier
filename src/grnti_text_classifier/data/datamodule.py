@@ -1,4 +1,5 @@
 """Lightning DataModule wrapping GRNTIDataset for HuggingFace tokenizers."""
+
 from __future__ import annotations
 
 from pathlib import Path

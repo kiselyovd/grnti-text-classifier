@@ -8,29 +8,30 @@ Runs:
   5. Confusion matrix for main model with human-readable GRNTI labels.
   6. Flat summary JSON.
 """
+
 from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from grnti_text_classifier.models.factory import build_baseline, build_main
-from grnti_text_classifier.training.optuna_sweep import run_sweep
-from grnti_text_classifier.training.train import train_one
 from grnti_text_classifier.evaluation.confusion import save_confusion_matrix
 from grnti_text_classifier.evaluation.metrics import compute_metrics
 from grnti_text_classifier.evaluation.report import build_summary
-
+from grnti_text_classifier.models.factory import build_baseline, build_main
+from grnti_text_classifier.training.optuna_sweep import run_sweep
+from grnti_text_classifier.training.train import train_one
 
 # ---------------------------------------------------------------------------
 # Scoring helper
 # ---------------------------------------------------------------------------
+
 
 def _score_hf_dir(
     hf_dir: Path,
@@ -93,27 +94,43 @@ def _score_hf_dir(
 # Main orchestrator
 # ---------------------------------------------------------------------------
 
+
 def main(argv: list[str] | None = None) -> None:
     """Parse CLI arguments and run the full training + evaluation pipeline."""
     parser = argparse.ArgumentParser(
         description="Train + evaluate GRNTI text classifiers end-to-end."
     )
-    parser.add_argument("--processed-dir", type=Path, default=Path("data/processed"),
-                        help="Pre-processed data directory (default: data/processed)")
-    parser.add_argument("--artifacts-dir", type=Path, default=Path("artifacts"),
-                        help="Root artefacts directory (default: artifacts)")
-    parser.add_argument("--reports-dir", type=Path, default=Path("reports"),
-                        help="Reports output directory (default: reports)")
-    parser.add_argument("--n-trials", type=int, default=10,
-                        help="Optuna trial count (default: 10)")
-    parser.add_argument("--max-epochs", type=int, default=5,
-                        help="Max training epochs per run (default: 5)")
-    parser.add_argument("--batch-size", type=int, default=16,
-                        help="Training batch size (default: 16)")
-    parser.add_argument("--skip-sweep", action="store_true",
-                        help="Skip Optuna sweep; use spec §12 defaults instead")
-    parser.add_argument("--skip-baseline", action="store_true",
-                        help="Skip baseline (ruBERT) training + scoring")
+    parser.add_argument(
+        "--processed-dir",
+        type=Path,
+        default=Path("data/processed"),
+        help="Pre-processed data directory (default: data/processed)",
+    )
+    parser.add_argument(
+        "--artifacts-dir",
+        type=Path,
+        default=Path("artifacts"),
+        help="Root artefacts directory (default: artifacts)",
+    )
+    parser.add_argument(
+        "--reports-dir",
+        type=Path,
+        default=Path("reports"),
+        help="Reports output directory (default: reports)",
+    )
+    parser.add_argument("--n-trials", type=int, default=10, help="Optuna trial count (default: 10)")
+    parser.add_argument(
+        "--max-epochs", type=int, default=5, help="Max training epochs per run (default: 5)"
+    )
+    parser.add_argument(
+        "--batch-size", type=int, default=16, help="Training batch size (default: 16)"
+    )
+    parser.add_argument(
+        "--skip-sweep", action="store_true", help="Skip Optuna sweep; use spec §12 defaults instead"
+    )
+    parser.add_argument(
+        "--skip-baseline", action="store_true", help="Skip baseline (ruBERT) training + scoring"
+    )
     args = parser.parse_args(argv)
 
     processed_dir: Path = args.processed_dir
@@ -202,18 +219,22 @@ def main(argv: list[str] | None = None) -> None:
     (reports_dir / "metrics.json").write_text(
         json.dumps(main_metrics, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    print(f"[train_all] Main  — macro_f1={main_metrics['macro_f1']:.4f}  "
-          f"top1={main_metrics['top1_accuracy']:.4f}")
+    print(
+        f"[train_all] Main  — macro_f1={main_metrics['macro_f1']:.4f}  "
+        f"top1={main_metrics['top1_accuracy']:.4f}"
+    )
 
-    baseline_metrics: dict | None = None
+    baseline_metrics: dict[str, Any] | None = None
     if baseline_hf is not None:
         baseline_logits, _ = _score_hf_dir(baseline_hf, test_parquet, num_classes)
         baseline_metrics = compute_metrics(y_true, baseline_logits, num_classes)
         (reports_dir / "metrics_baseline.json").write_text(
             json.dumps(baseline_metrics, indent=2, ensure_ascii=False), encoding="utf-8"
         )
-        print(f"[train_all] Baseline — macro_f1={baseline_metrics['macro_f1']:.4f}  "
-              f"top1={baseline_metrics['top1_accuracy']:.4f}")
+        print(
+            f"[train_all] Baseline — macro_f1={baseline_metrics['macro_f1']:.4f}  "
+            f"top1={baseline_metrics['top1_accuracy']:.4f}"
+        )
 
     # ------------------------------------------------------------------
     # Step 5: Confusion matrix (main model)
@@ -232,8 +253,10 @@ def main(argv: list[str] | None = None) -> None:
         summary = build_summary(
             main_metrics, baseline_metrics, out_path=reports_dir / "metrics_summary.json"
         )
-        print(f"[train_all] Summary: main_macro_f1={summary['main_macro_f1']}  "
-              f"baseline_macro_f1={summary['baseline_macro_f1']}")
+        print(
+            f"[train_all] Summary: main_macro_f1={summary['main_macro_f1']}  "
+            f"baseline_macro_f1={summary['baseline_macro_f1']}"
+        )
     else:
         print("[train_all] Baseline not run — skipping comparative summary.")
 

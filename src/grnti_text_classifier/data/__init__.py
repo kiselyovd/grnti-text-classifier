@@ -1,4 +1,5 @@
 """Data layer."""
+
 from __future__ import annotations
 
-from .dataset import TextDataset
+from .dataset import TextDataset as TextDataset

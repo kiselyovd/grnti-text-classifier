@@ -1,13 +1,16 @@
 """Lightning Trainer entrypoint for GRNTI text classification."""
+
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
+import lightning as L  # noqa: N812
 import numpy as np
 import torch
-import lightning as L
-from lightning.pytorch.callbacks import ModelCheckpoint, EarlyStopping
+from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
 from lightning.pytorch.loggers import CSVLogger
 
 from ..data.datamodule import GRNTIDataModule
@@ -15,7 +18,7 @@ from ..models.lightning_module import GRNTIClassifier
 
 
 def train_one(
-    model_builder,
+    model_builder: Callable[..., Any],
     model_name_for_tokenizer: str,
     processed_dir: Path,
     out_dir: Path,
@@ -96,6 +99,7 @@ def train_one(
     num_classes: int = int(label_enc["num_classes"])
 
     import pandas as pd
+
     train_df = pd.read_parquet(processed_dir / "train.parquet")
     freq = np.bincount(train_df["label_idx"].to_numpy(), minlength=num_classes).astype(np.float64)
     weights = 1.0 / np.clip(freq, 1, None)
@@ -118,7 +122,7 @@ def train_one(
     )
 
     # 5. Hardware
-    precision = "bf16-mixed" if torch.cuda.is_available() else 32
+    precision: str | int = "bf16-mixed" if torch.cuda.is_available() else 32
     accelerator = "gpu" if torch.cuda.is_available() else "cpu"
 
     # 6. Callbacks + logger
@@ -137,7 +141,7 @@ def train_one(
     trainer = L.Trainer(
         accelerator=accelerator,
         devices=1,
-        precision=precision,
+        precision=precision,  # type: ignore[arg-type]  # template stub; revisit in backport
         max_epochs=max_epochs,
         callbacks=[ckpt_cb, es_cb],
         logger=logger,

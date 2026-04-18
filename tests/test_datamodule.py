@@ -1,8 +1,8 @@
 """Tests for GRNTIDataModule."""
+
 from __future__ import annotations
 
 import pandas as pd
-import pytest
 import torch
 
 from grnti_text_classifier.data.datamodule import GRNTIDataModule

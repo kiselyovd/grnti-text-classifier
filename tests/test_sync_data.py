@@ -1,7 +1,12 @@
 """Smoke-test sync_data idempotence when target files already present."""
+
 from __future__ import annotations
-import os, subprocess, sys
+
+import os
+import subprocess
+import sys
 from pathlib import Path
+
 import pytest
 
 

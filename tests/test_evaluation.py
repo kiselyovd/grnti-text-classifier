@@ -1,8 +1,8 @@
 """Tests for the evaluation metrics module."""
+
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from grnti_text_classifier.evaluation.metrics import compute_metrics
 
@@ -18,7 +18,14 @@ def test_compute_metrics_keys_on_toy() -> None:
 
     result = compute_metrics(y_true, logits, num_classes=num_classes)
 
-    required_keys = {"top1_accuracy", "top5_accuracy", "macro_f1", "weighted_f1", "num_classes", "n"}
+    required_keys = {
+        "top1_accuracy",
+        "top5_accuracy",
+        "macro_f1",
+        "weighted_f1",
+        "num_classes",
+        "n",
+    }
     assert required_keys == set(result.keys()), f"Missing or extra keys: {set(result.keys())}"
 
     assert result["n"] == 200

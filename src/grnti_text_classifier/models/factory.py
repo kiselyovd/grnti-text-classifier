@@ -1,4 +1,5 @@
 """Model factories — return a pretrained HuggingFace model ready for fine-tuning."""
+
 from __future__ import annotations
 
 from transformers import AutoModelForSequenceClassification, PreTrainedModel

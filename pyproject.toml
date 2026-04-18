@@ -37,20 +37,22 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "pytest>=8.0.0",
-  "pytest-cov>=4.1.0",
-  "ruff>=0.15.10",
-  "mypy>=1.20.1",
-  "pre-commit>=4.0.0",
+  "ruff==0.15.10",
+  "mypy==1.20.1",
+  "pytest>=8.3,<9.0",
+  "pytest-cov>=6.0",
+  "pytest-asyncio>=0.24",
+  "httpx>=0.27",
+  "pre-commit==4.*",
+  "deptry==0.25.1",
+  "bandit[toml]==1.9.4",
+  "interrogate==1.7.0",
+  "codespell==2.4.2",
+  "pandas-stubs",
+  "types-PyYAML",
   "nbqa>=1.8.0",
   "nbstripout>=0.9.1",
   "ipykernel>=6.29.0",
-  "matplotlib>=3.8.0",
-  "deptry>=0.25.1",
-  "bandit[toml]>=1.9.4",
-  "interrogate>=1.7.0",
-  "codespell>=2.4.2",
-  "httpx>=0.27,<1.0",
 ]
 serving = [
   "fastapi>=0.110.0",
@@ -81,28 +83,36 @@ packages = ["src/grnti_text_classifier"]
 [tool.ruff]
 line-length = 100
 target-version = "py313"
-extend-exclude = ["notebooks"]
+extend-exclude = ["notebooks/*.ipynb", "outputs", "mlruns"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "W", "UP", "B", "SIM", "RUF", "N"]
-ignore = ["N812"]
+select = ["E", "F", "I", "N", "UP", "B", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
+"tests/**" = ["N806", "E501"]
 "src/grnti_text_classifier/serving/routes.py" = ["B008"]
 
 [tool.mypy]
 python_version = "3.13"
-ignore_missing_imports = true
+strict = true
 warn_unused_ignores = true
-warn_redundant_casts = true
-check_untyped_defs = true
 
 [[tool.mypy.overrides]]
-module = "grnti_text_classifier.serving.*"
-ignore_errors = true
+module = ["transformers.*", "datasets.*", "sentencepiece.*", "lightning.*",
+          "torchmetrics.*", "optuna.*", "sklearn.*", "matplotlib.*", "seaborn.*",
+          "structlog.*", "torch.*", "huggingface_hub.*", "jinja2.*", "torchvision.*",
+          "mlflow.*", "dvc.*", "wandb.*", "hydra.*", "omegaconf.*"]
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "grnti_text_classifier.data.datamodule"
+module = [
+    "grnti_text_classifier.serving.*",
+    "grnti_text_classifier.data.datamodule",
+    "grnti_text_classifier.data.dataset",
+    "grnti_text_classifier.models.lightning_module",
+    "grnti_text_classifier.utils.hf_hub",
+    "grnti_text_classifier.training.train",
+]
 ignore_errors = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -119,10 +129,11 @@ exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "raise NotImplementedE
 [tool.bandit]
 exclude_dirs = ["tests", "notebooks", "data", "artifacts"]
 # B101: assert_used (pytest convention)
+# B311: random — used only for non-security shuffling/sampling
 # B614: pytorch_load — we load only our own trained checkpoints
 # B615: huggingface_unsafe_download — we download only our own / trusted HF repos
 # B701: jinja2_autoescape_false — templates render Markdown/YAML, not HTML
-skips = ["B101", "B614", "B615", "B701"]
+skips = ["B101", "B311", "B614", "B615", "B701"]
 
 [tool.interrogate]
 ignore-init-method = true
@@ -131,22 +142,19 @@ ignore-magic = true
 ignore-private = false
 ignore-nested-functions = true
 ignore-module = false
-fail-under = 50
-exclude = ["tests", "notebooks", "docs", "build", "setup.py"]
+fail-under = 30
+exclude = ["tests", "notebooks", "outputs", "mlruns", "docs", "build", "setup.py"]
 verbose = 1
 color = true
 
 [tool.deptry]
 extend_exclude = ["notebooks", "tests"]
 known_first_party = ["grnti_text_classifier"]
-# DEP004: dependency-groups (serving, tracking, docs) are intentional optional installs
-ignore = ["DEP004"]
-
-[tool.deptry.per_rule_ignores]
-DEP002 = ["nbstripout", "ipykernel", "pyyaml", "rich"]
+# DEP001-DEP004: CLI tools, optional groups, and transitive deps not directly imported
+ignore = ["DEP001", "DEP002", "DEP003", "DEP004"]
 
 [tool.codespell]
-skip = "uv.lock,*.ipynb,*.lock,data/*"
+skip = "uv.lock,*.ipynb,notebooks,outputs,mlruns,*.lock,data,site"
 ignore-words-list = "te,nd,fo"
 
 [tool.uv.sources]

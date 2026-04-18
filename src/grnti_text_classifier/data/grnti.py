@@ -1,7 +1,8 @@
 """GRNTI dataset helpers: loader, label encoder, stratified split."""
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -129,7 +130,7 @@ class LabelEncoder:
     # Encode / decode
     # ------------------------------------------------------------------
 
-    def encode(self, labels: "pd.Series | list[int]") -> np.ndarray:
+    def encode(self, labels: pd.Series | list[int]) -> np.ndarray:
         """Map raw codes → dense indices."""
         return np.array([self.code_to_idx[int(c)] for c in labels], dtype=np.int64)
 
@@ -155,7 +156,7 @@ class LabelEncoder:
         }
 
     @classmethod
-    def from_json_dict(cls, d: dict[str, Any]) -> "LabelEncoder":
+    def from_json_dict(cls, d: dict[str, Any]) -> LabelEncoder:
         """Reconstruct a LabelEncoder from a JSON dict."""
         return cls(
             code_to_idx={int(k): int(v) for k, v in d["code_to_idx"].items()},

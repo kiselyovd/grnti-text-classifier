@@ -1,4 +1,5 @@
 """Tests for model factories and GRNTIClassifier Lightning module."""
+
 from __future__ import annotations
 
 import os

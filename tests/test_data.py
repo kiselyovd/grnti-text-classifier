@@ -1,27 +1,24 @@
 """Tests for grnti_text_classifier.data.grnti helpers."""
+
 from __future__ import annotations
 
 import json
 
-import numpy as np
 import pandas as pd
-import pytest
 
 from grnti_text_classifier.data.grnti import (
-    ENCODED_COL,
     FEATURES,
     LABEL_COL,
-    TEXT_COL,
     LabelEncoder,
     build_label_encoder,
     load_jsonl,
     split_stratified_train_val,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_toy_df(codes: list[int], n_per_code: int = 50) -> pd.DataFrame:
     """Create a toy DataFrame with *n_per_code* rows per code."""
@@ -45,14 +42,9 @@ def _make_toy_df(codes: list[int], n_per_code: int = 50) -> pd.DataFrame:
 
 def test_load_jsonl_round_trip(tmp_path):
     """Writing 5 rows as JSONL then loading should preserve shape and columns."""
-    data = [
-        {"id": i, "label": 20000 + i * 10000, "text": f"text {i}"}
-        for i in range(5)
-    ]
+    data = [{"id": i, "label": 20000 + i * 10000, "text": f"text {i}"} for i in range(5)]
     jsonl_path = tmp_path / "sample.jsonl"
-    jsonl_path.write_text(
-        "\n".join(json.dumps(row) for row in data), encoding="utf-8"
-    )
+    jsonl_path.write_text("\n".join(json.dumps(row) for row in data), encoding="utf-8")
 
     df = load_jsonl(jsonl_path)
 

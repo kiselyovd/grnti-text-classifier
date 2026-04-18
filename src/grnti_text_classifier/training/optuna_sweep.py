@@ -1,7 +1,10 @@
 """Optuna hyper-parameter sweep over train_one for GRNTI classifiers."""
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import optuna
 from optuna.samplers import TPESampler
@@ -13,14 +16,14 @@ def run_sweep(
     processed_dir: Path,
     out_dir: Path,
     *,
-    model_builder,
+    model_builder: Callable[..., Any],
     model_name_for_tokenizer: str,
     n_trials: int = 10,
     seed: int = 42,
     trial_epochs: int = 3,
     batch_size: int = 16,
     num_workers: int = 0,
-) -> dict:
+) -> dict[str, Any]:
     """Run an Optuna TPE sweep over learning-rate, weight-decay and warmup-ratio.
 
     Parameters
@@ -77,6 +80,7 @@ def run_sweep(
         # Read the best val/macro_f1 from the CSVLogger output
         metrics_csv = trial_dir / "logs" / "version_0" / "metrics.csv"
         import pandas as pd
+
         df = pd.read_csv(metrics_csv)
         if "val/macro_f1" not in df.columns:
             return 0.0

@@ -3,6 +3,7 @@
 These sections pin torch to the CUDA index. We remove them so uv resolves
 torch from whatever index we pass on the CLI (the CPU wheel index).
 """
+
 import pathlib
 import re
 

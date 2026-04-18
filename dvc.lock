@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   prepare:
-    cmd: python -m grnti_text_classifier.data.prepare --raw data/raw --out 
+    cmd: python -m grnti_text_classifier.data.prepare --raw data/raw --out
       data/processed
     deps:
     - path: data/raw

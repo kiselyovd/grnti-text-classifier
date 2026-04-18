@@ -1,9 +1,14 @@
 """GRNTI classifier routes — /health, /classify, /labels."""
+
 from __future__ import annotations
-import json, os, uuid
+
+import json
+import os
+import uuid
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
+
 import numpy as np
 import torch
 from fastapi import APIRouter, HTTPException, Query
@@ -22,12 +27,10 @@ _ENV_VER = "GRNTI_MODEL_VERSION"
 def _env_path(var: str) -> Path:
     p = os.environ.get(var)
     if not p:
-        raise HTTPException(status_code=503,
-                            detail=f"Required env var {var} is not set.")
+        raise HTTPException(status_code=503, detail=f"Required env var {var} is not set.")
     path = Path(p)
     if not path.exists():
-        raise HTTPException(status_code=503,
-                            detail=f"{var} path does not exist: {path}")
+        raise HTTPException(status_code=503, detail=f"{var} path does not exist: {path}")
     return path
 
 
@@ -68,8 +71,13 @@ def classify(
     tok, mdl, model_dir = _load_model(model)
     idx_to_text = _load_labels()
 
-    enc = tok(payload.text, return_tensors="pt",
-              padding="max_length", truncation=True, max_length=payload.max_length)
+    enc = tok(
+        payload.text,
+        return_tensors="pt",
+        padding="max_length",
+        truncation=True,
+        max_length=payload.max_length,
+    )
     if torch.cuda.is_available():
         enc = {k: v.cuda() for k, v in enc.items()}
     input_length_tokens = int(enc["attention_mask"].sum().item())
@@ -80,8 +88,10 @@ def classify(
     probs = torch.softmax(out.logits, dim=-1).squeeze(0).cpu().numpy()
 
     top5_idx = np.argsort(probs)[-5:][::-1].tolist()
-    top5 = [LabelProb(label=i, label_text=idx_to_text.get(i, f"GRNTI-{i}"),
-                      probability=float(probs[i])) for i in top5_idx]
+    top5 = [
+        LabelProb(label=i, label_text=idx_to_text.get(i, f"GRNTI-{i}"), probability=float(probs[i]))
+        for i in top5_idx
+    ]
 
     return ClassificationResponse(
         top1=top5[0],

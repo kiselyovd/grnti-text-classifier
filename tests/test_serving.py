@@ -3,27 +3,33 @@
 Uses a tiny 1-layer XLM-RoBERTa config built in-memory (no HF downloads beyond
 the shared tokenizer cache) to keep test runtime <30s.
 """
+
 from __future__ import annotations
+
 import json
-from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
-from transformers import (AutoTokenizer, XLMRobertaConfig,
-                           XLMRobertaForSequenceClassification)
+from transformers import AutoTokenizer, XLMRobertaConfig, XLMRobertaForSequenceClassification
 
 from grnti_text_classifier.serving.main import app
 
 
 @pytest.fixture(scope="module", autouse=True)
-def _setup_model(tmp_path_factory: pytest.TempPathFactory,
-                 monkeypatch_module: pytest.MonkeyPatch):
+def _setup_model(tmp_path_factory: pytest.TempPathFactory, monkeypatch_module: pytest.MonkeyPatch):
     tmp = tmp_path_factory.mktemp("grnti_serving")
     main_dir = tmp / "main"
     main_dir.mkdir()
-    cfg = XLMRobertaConfig(vocab_size=250002, hidden_size=64, num_hidden_layers=1,
-                           num_attention_heads=2, intermediate_size=128,
-                           num_labels=2, max_position_embeddings=256,
-                           type_vocab_size=1)
+    cfg = XLMRobertaConfig(
+        vocab_size=250002,
+        hidden_size=64,
+        num_hidden_layers=1,
+        num_attention_heads=2,
+        intermediate_size=128,
+        num_labels=2,
+        max_position_embeddings=256,
+        type_vocab_size=1,
+    )
     model = XLMRobertaForSequenceClassification(cfg)
     model.save_pretrained(main_dir)
     tok = AutoTokenizer.from_pretrained("FacebookAI/xlm-roberta-base", use_fast=True)
@@ -33,10 +39,12 @@ def _setup_model(tmp_path_factory: pytest.TempPathFactory,
     baseline_dir.mkdir()
     model.save_pretrained(baseline_dir)
     tok.save_pretrained(baseline_dir)
-    encoder = {"code_to_idx": {"0": 0, "10000": 1},
-               "idx_to_code": {"0": 0, "1": 10000},
-               "idx_to_text": {"0": "Класс ноль", "1": "Класс один"},
-               "num_classes": 2}
+    encoder = {
+        "code_to_idx": {"0": 0, "10000": 1},
+        "idx_to_code": {"0": 0, "1": 10000},
+        "idx_to_text": {"0": "Класс ноль", "1": "Класс один"},
+        "num_classes": 2,
+    }
     enc_path = tmp / "label_encoder.json"
     enc_path.write_text(json.dumps(encoder, ensure_ascii=False), encoding="utf-8")
 
@@ -46,6 +54,7 @@ def _setup_model(tmp_path_factory: pytest.TempPathFactory,
     monkeypatch_module.setenv("GRNTI_MODEL_VERSION", "test-0.0.1")
     # clear the lru_cache since we set env vars mid-session
     from grnti_text_classifier.serving.routes import _load_model
+
     _load_model.cache_clear()
     yield
 
@@ -54,6 +63,7 @@ def _setup_model(tmp_path_factory: pytest.TempPathFactory,
 def monkeypatch_module():
     """module-scoped monkeypatch."""
     from _pytest.monkeypatch import MonkeyPatch
+
     mp = MonkeyPatch()
     yield mp
     mp.undo()

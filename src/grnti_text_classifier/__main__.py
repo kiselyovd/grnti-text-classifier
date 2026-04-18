@@ -1,4 +1,5 @@
 """CLI entrypoint: python -m grnti_text_classifier"""
+
 from __future__ import annotations
 
 import sys

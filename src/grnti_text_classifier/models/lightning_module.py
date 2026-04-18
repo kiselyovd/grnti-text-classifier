@@ -1,12 +1,13 @@
 """Lightning wrapper for GRNTI sequence classification models."""
+
 from __future__ import annotations
 
 import lightning
 import torch
-import torch.nn.functional as F
+import torch.nn.functional as F  # noqa: N812
 from torch.optim import AdamW
+from torchmetrics.classification import MulticlassAccuracy, MulticlassF1Score
 from transformers import PreTrainedModel, get_linear_schedule_with_warmup
-from torchmetrics.classification import MulticlassF1Score, MulticlassAccuracy
 
 
 class GRNTIClassifier(lightning.LightningModule):
@@ -37,7 +38,9 @@ class GRNTIClassifier(lightning.LightningModule):
         self.test_top1 = MulticlassAccuracy(num_classes=num_classes, top_k=1, average="micro")
         self.test_top5 = MulticlassAccuracy(num_classes=num_classes, top_k=_top5, average="micro")
 
-    def _step(self, batch: dict) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def _step(
+        self, batch: dict[str, torch.Tensor]
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         # Lazy device-move for class_weights so constructor stays device-agnostic.
         if self.class_weights is not None and self.class_weights.device != batch["labels"].device:
             self.class_weights = self.class_weights.to(batch["labels"].device)
@@ -49,14 +52,14 @@ class GRNTIClassifier(lightning.LightningModule):
         preds = out.logits.argmax(-1)
         return loss, out.logits, preds
 
-    def training_step(self, batch: dict, batch_idx: int) -> torch.Tensor:
-        loss, logits, preds = self._step(batch)
+    def training_step(self, batch: dict[str, torch.Tensor], batch_idx: int) -> torch.Tensor:
+        loss, _logits, preds = self._step(batch)
         self.train_f1(preds, batch["labels"])
         self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True)
         self.log("train/macro_f1", self.train_f1, on_step=False, on_epoch=True, prog_bar=True)
         return loss
 
-    def validation_step(self, batch: dict, batch_idx: int) -> None:
+    def validation_step(self, batch: dict[str, torch.Tensor], batch_idx: int) -> None:
         loss, logits, preds = self._step(batch)
         self.val_f1(preds, batch["labels"])
         self.val_top1(logits, batch["labels"])
@@ -66,7 +69,7 @@ class GRNTIClassifier(lightning.LightningModule):
         self.log("val/top1_acc", self.val_top1, prog_bar=True)
         self.log("val/top5_acc", self.val_top5, prog_bar=True)
 
-    def test_step(self, batch: dict, batch_idx: int) -> None:
+    def test_step(self, batch: dict[str, torch.Tensor], batch_idx: int) -> None:
         loss, logits, preds = self._step(batch)
         self.test_f1(preds, batch["labels"])
         self.test_top1(logits, batch["labels"])
@@ -76,7 +79,7 @@ class GRNTIClassifier(lightning.LightningModule):
         self.log("test/top1_acc", self.test_top1)
         self.log("test/top5_acc", self.test_top5)
 
-    def configure_optimizers(self):  # type: ignore[override]
+    def configure_optimizers(self) -> dict[str, object]:  # type: ignore[override]
         opt = AdamW(
             self.model.parameters(),
             lr=self.hparams.lr,  # type: ignore[attr-defined]

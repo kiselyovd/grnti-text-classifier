@@ -3,6 +3,7 @@
 Uses a 1-layer XLMRobertaForSequenceClassification built in-memory to avoid HF
 downloads in CI.
 """
+
 from __future__ import annotations
 
 import json
@@ -72,6 +73,4 @@ def test_train_one_smoke(tmp_path: Path) -> None:
     )
 
     assert (hf_dir / "config.json").is_file()
-    assert (hf_dir / "tokenizer.json").is_file() or (
-        hf_dir / "sentencepiece.bpe.model"
-    ).is_file()
+    assert (hf_dir / "tokenizer.json").is_file() or (hf_dir / "sentencepiece.bpe.model").is_file()

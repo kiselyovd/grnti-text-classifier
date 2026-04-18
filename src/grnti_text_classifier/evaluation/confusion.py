@@ -1,4 +1,5 @@
 """Confusion matrix visualisation — saves a seaborn heatmap PNG."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -8,16 +9,16 @@ import numpy as np
 
 matplotlib.use("Agg")
 
-import matplotlib.pyplot as plt  # noqa: E402
-import seaborn as sns  # noqa: E402
-from sklearn.metrics import confusion_matrix  # noqa: E402
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
 
 def save_confusion_matrix(
     y_true: np.ndarray,
     preds: np.ndarray,
     labels: list[str],
-    out_path: "str | Path",
+    out_path: str | Path,
 ) -> None:
     """Save a row-normalised confusion matrix heatmap to *out_path* (PNG).
 
@@ -43,7 +44,7 @@ def save_confusion_matrix(
         normalize="true",
     )
 
-    fig, ax = plt.subplots(figsize=(14, 12))
+    _fig, ax = plt.subplots(figsize=(14, 12))
     sns.heatmap(
         cm,
         annot=False,

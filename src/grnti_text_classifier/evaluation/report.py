@@ -1,16 +1,18 @@
 """Summary report builder — merges main and baseline metrics into a JSON file."""
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 
 def build_summary(
-    main_metrics: dict,
-    baseline_metrics: dict,
+    main_metrics: dict[str, Any],
+    baseline_metrics: dict[str, Any],
     *,
-    out_path: "str | Path",
-) -> dict:
+    out_path: str | Path,
+) -> dict[str, Any]:
     """Write a flat JSON summary combining main and baseline scoring results.
 
     Parameters

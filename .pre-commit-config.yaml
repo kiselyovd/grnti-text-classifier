@@ -3,6 +3,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-yaml
+        args: [--unsafe]
       - id: check-toml
       - id: check-added-large-files
         args: [--maxkb=1024]
@@ -22,11 +23,13 @@ repos:
     rev: v1.20.1
     hooks:
       - id: mypy
-        files: ^(src|scripts)/
-        args: [--config-file=pyproject.toml]
+        pass_filenames: false
         additional_dependencies:
-          - types-PyYAML
-          - types-requests
+          - "pydantic>=2"
+          - "pandas-stubs"
+          - "types-PyYAML"
+          - "structlog"
+        args: [src, scripts]
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.9.4
@@ -41,21 +44,24 @@ repos:
       - id: interrogate
         args: ["-c", "pyproject.toml"]
 
-  - repo: https://github.com/fpgmaas/deptry
-    rev: 0.25.1
+  - repo: local
     hooks:
       - id: deptry
-
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.12
-    hooks:
-      - id: actionlint
+        name: deptry
+        language: system
+        entry: uv run deptry .
+        pass_filenames: false
+        always_run: true
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.2
     hooks:
       - id: codespell
-        args: [--skip=uv.lock,*.ipynb,*.lock]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
 
   - repo: https://github.com/kynan/nbstripout
     rev: 0.9.1

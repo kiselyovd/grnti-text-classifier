@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -34,7 +35,6 @@ def main() -> None:
         le = json.load(fh)
 
     idx_to_text: dict[str, str] = le["idx_to_text"]
-    idx_to_code: dict[str, int] = le["idx_to_code"]
 
     # Pick top-N most-populous classes
     class_counts = df["label_idx"].value_counts()
@@ -43,7 +43,7 @@ def main() -> None:
 
     # Sample one abstract per selected class
     rng = np.random.default_rng(args.seed)
-    records: list[dict] = []
+    records: list[dict[str, Any]] = []
 
     for idx in top_idxs:
         subset = df[df["label_idx"] == idx]

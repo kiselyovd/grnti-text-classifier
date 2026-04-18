@@ -1,9 +1,12 @@
 """Data preparation CLI: raw JSONL → processed Parquet + label_encoder.json."""
+
 from __future__ import annotations
 
 import argparse
 import json
 from pathlib import Path
+
+import pandas as pd
 
 from .grnti import (
     ENCODED_COL,
@@ -29,13 +32,11 @@ def prepare_data(
     test_df = load_jsonl(raw / "test.jsonl")
 
     # Build encoder from all codes present in both splits combined.
-    combined = train_raw._append(test_df, ignore_index=True)
+    combined = pd.concat([train_raw, test_df], ignore_index=True)
     encoder = build_label_encoder(combined)
 
     # Stratified train / val split.
-    train_df, val_df = split_stratified_train_val(
-        train_raw, val_fraction=val_fraction, seed=seed
-    )
+    train_df, val_df = split_stratified_train_val(train_raw, val_fraction=val_fraction, seed=seed)
 
     # Add dense label index to each split.
     train_df = train_df.copy()

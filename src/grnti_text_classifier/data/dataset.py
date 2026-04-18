@@ -1,13 +1,15 @@
 """Dataset implementations."""
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
+from typing import Any
 
-from PIL import Image
 from torch.utils.data import Dataset
 
-class TextDataset(Dataset):
+
+class TextDataset(Dataset[dict[str, Any]]):
     """CSV-backed text classification dataset."""
 
     def __init__(
@@ -15,7 +17,7 @@ class TextDataset(Dataset):
         csv_path: Path | str,
         text_col: str = "text",
         label_col: str = "label",
-        tokenizer: Callable | None = None,
+        tokenizer: Callable[..., Any] | None = None,
         max_length: int = 512,
     ) -> None:
         import pandas as pd
@@ -29,7 +31,7 @@ class TextDataset(Dataset):
     def __len__(self) -> int:
         return len(self.df)
 
-    def __getitem__(self, idx: int) -> dict:
+    def __getitem__(self, idx: int) -> dict[str, Any]:
         row = self.df.iloc[idx]
         item = {"text": str(row[self.text_col]), "label": int(row[self.label_col])}
         if self.tokenizer is not None:
