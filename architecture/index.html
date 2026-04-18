@@ -612,13 +612,20 @@
 <h1 id="architecture">Architecture</h1>
 <p>Two independent <code>save_pretrained</code> artefacts sharing the same <code>{top1_label, top1_prob, top5, truncated, input_length_tokens, request_id, model_version}</code> contract.</p>
 <pre class="mermaid"><code>flowchart LR
-    A["data/raw/*.jsonl&lt;br/&gt;HF snapshot_download"] --&gt;|prepare.py| B["data/processed/&lt;br/&gt;train/val/test.parquet + label_encoder.json"]
-    B --&gt;|GRNTIDataModule| C["XLM-R tokenizer&lt;br/&gt;padding=max_length&lt;br/&gt;truncation=True"]
-    C --&gt; D["GRNTIClassifier&lt;br/&gt;AdamW + linear warmup+decay&lt;br/&gt;bf16-mixed on CUDA"]
-    D --&gt;|train_one| E["artifacts/{main,baseline}/hf/&lt;br/&gt;save_pretrained"]
-    E --&gt;|evaluate.py| F["reports/metrics.json&lt;br/&gt;+ confusion_matrix.png&lt;br/&gt;+ metrics_summary.json"]
-    E -.-&gt;|publish_to_hf.py| G["HF Hub: kiselyovd/grnti-text-classifier"]
-    E -.-&gt;|"FastAPI /classify"| H["JSON: top-1 + top-5 + probs"]</code></pre>
+    A["data/raw/*.jsonl&lt;br/&gt;HF snapshot_download"]:::external --&gt;|prepare.py| B["data/processed/&lt;br/&gt;train/val/test.parquet&lt;br/&gt;+ label_encoder.json"]:::data
+    B --&gt;|GRNTIDataModule| C["XLM-R tokenizer&lt;br/&gt;padding=max_length&lt;br/&gt;truncation=True"]:::code
+    C --&gt; D["GRNTIClassifier&lt;br/&gt;AdamW + linear warmup+decay&lt;br/&gt;bf16-mixed on CUDA"]:::model
+    D --&gt;|train_one| E["artifacts/{main,baseline}/hf/&lt;br/&gt;save_pretrained"]:::artifact
+    E --&gt;|evaluate.py| F["reports/metrics.json&lt;br/&gt;+ confusion_matrix.png&lt;br/&gt;+ metrics_summary.json"]:::artifact
+    E -.-&gt;|publish_to_hf.py| G["HF Hub&lt;br/&gt;kiselyovd/grnti-text-classifier"]:::external
+    E -.-&gt;|"FastAPI /classify"| H["JSON&lt;br/&gt;top-1 + top-5 + probs"]:::serve
+
+    classDef external fill:#E0F2F1,stroke:#00796B,color:#004D40
+    classDef data fill:#B2DFDB,stroke:#00796B,color:#004D40
+    classDef code fill:#80CBC4,stroke:#00695C,color:#004D40
+    classDef model fill:#4DB6AC,stroke:#004D40,color:#fff
+    classDef artifact fill:#26A69A,stroke:#004D40,color:#fff
+    classDef serve fill:#00897B,stroke:#004D40,color:#fff</code></pre>
 <h2 id="data-flow">Data flow</h2>
 <p><code>scripts/sync_data.sh</code> calls <code>snapshot_download</code> from the HF Hub to pull <code>ai-forever/ru-scibench-grnti-classification</code> into <code>data/raw/</code> as JSONL shards. <code>grnti_text_classifier.data.prepare</code> reads those shards, fits a <code>LabelEncoder</code> over the 28 GRNTI top-level class codes, writes stratified <code>train/val/test.parquet</code> splits under <code>data/processed/</code>, and serialises the encoder to <code>data/processed/label_encoder.json</code>. The <code>GRNTIDataModule</code> wraps those Parquet files: it tokenises on-the-fly with the HF <code>AutoTokenizer</code> (<code>padding="max_length"</code>, <code>truncation=True</code>, <code>max_length=256</code>), returning <code>input_ids</code>, <code>attention_mask</code>, and <code>labels</code> tensors.</p>
 <h2 id="why-xlm-roberta-base-over-rubert">Why XLM-RoBERTa-base over ruBERT</h2>
