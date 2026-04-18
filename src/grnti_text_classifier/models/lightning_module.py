@@ -31,12 +31,16 @@ class GRNTIClassifier(lightning.LightningModule):
         self.val_f1 = MulticlassF1Score(num_classes=num_classes, average="macro")
         self.test_f1 = MulticlassF1Score(num_classes=num_classes, average="macro")
 
+        _top5 = min(5, num_classes)
         self.val_top1 = MulticlassAccuracy(num_classes=num_classes, top_k=1, average="micro")
-        self.val_top5 = MulticlassAccuracy(num_classes=num_classes, top_k=5, average="micro")
+        self.val_top5 = MulticlassAccuracy(num_classes=num_classes, top_k=_top5, average="micro")
         self.test_top1 = MulticlassAccuracy(num_classes=num_classes, top_k=1, average="micro")
-        self.test_top5 = MulticlassAccuracy(num_classes=num_classes, top_k=5, average="micro")
+        self.test_top5 = MulticlassAccuracy(num_classes=num_classes, top_k=_top5, average="micro")
 
     def _step(self, batch: dict) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        # Lazy device-move for class_weights so constructor stays device-agnostic.
+        if self.class_weights is not None and self.class_weights.device != batch["labels"].device:
+            self.class_weights = self.class_weights.to(batch["labels"].device)
         out = self.model(
             input_ids=batch["input_ids"],
             attention_mask=batch["attention_mask"],
@@ -46,10 +50,6 @@ class GRNTIClassifier(lightning.LightningModule):
         return loss, out.logits, preds
 
     def training_step(self, batch: dict, batch_idx: int) -> torch.Tensor:
-        # Lazy device-move for class_weights so constructor stays device-agnostic.
-        if self.class_weights is not None and self.class_weights.device != batch["labels"].device:
-            self.class_weights = self.class_weights.to(batch["labels"].device)
-
         loss, logits, preds = self._step(batch)
         self.train_f1(preds, batch["labels"])
         self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True)
