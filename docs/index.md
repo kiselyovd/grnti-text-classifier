@@ -1,5 +1,7 @@
 # grnti-text-classifier
 
+![grnti-text-classifier banner](images/banner.jpg)
+
 Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model **XLM-RoBERTa-base**, fine-tuned with PyTorch Lightning on Russian research abstracts; baseline **ruBERT-base-cased**. Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, served by FastAPI as `/classify`.
 
 > **Part of the [kiselyovd ML portfolio](https://github.com/kiselyovd#ml-portfolio)** — production-grade ML projects sharing one [cookiecutter template](https://github.com/kiselyovd/ml-project-template).
@@ -14,14 +16,24 @@ Production-grade Russian scientific-text classifier over 28 top-level GRNTI (Sta
 
 ## Results
 
-Filled in from `reports/metrics_summary.json` once the v0.1.0 run completes (Task 18).
+Test set n = 2 772 abstracts across 28 GRNTI sections.
 
 | Model | Top-1 accuracy | Top-5 accuracy | Macro F1 | Weighted F1 |
 |-------|---------------:|---------------:|---------:|------------:|
-| XLM-RoBERTa-base (main) | — | — | — | — |
-| ruBERT-base-cased (baseline) | — | — | — | — |
+| **XLM-RoBERTa-base (main)** | **72.4%** | **96.8%** | **72.3%** | **72.3%** |
+| ruBERT-base-cased (baseline) | 72.9% | 95.9% | 72.8% | 72.8% |
 
-Test set n = 2 772.
+Baseline slightly ahead on top-1, main ahead by +0.9pp on top-5 — XLM-R's multilingual pre-training gives a better top-k rerank, while the ru-only ruBERT is marginally sharper on the argmax.
+
+## Visualizations
+
+![Confusion matrix](images/confusion_matrix.png)
+
+XLM-RoBERTa-base confusion matrix over the 28 GRNTI sections (test set, n = 2 772). Strong diagonal with off-diagonal mass concentrated between semantically adjacent sections.
+
+![Per-class F1](images/per_class_f1.png)
+
+Per-class F1 across all 28 GRNTI sections, ranked. Highlights the spread between well-separated and harder, overlapping classes that drive the 72.3% macro-F1.
 
 ## Navigation
 

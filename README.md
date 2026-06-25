@@ -7,6 +7,8 @@
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![HF Hub](https://img.shields.io/badge/🤗%20HF%20Hub-model-FFD21E?style=for-the-badge)](https://huggingface.co/kiselyovd/grnti-text-classifier)
 
+![grnti-text-classifier banner](docs/images/banner.jpg)
+
 Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model **XLM-RoBERTa-base** (multilingual transformer, fine-tuned on Russian abstracts); baseline **ruBERT-base-cased** (single-language BERT). Both are Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, and served by FastAPI as `/classify`.
 
 > **Part of the [kiselyovd ML portfolio](https://github.com/kiselyovd#ml-portfolio)** — production-grade ML projects sharing one [cookiecutter template](https://github.com/kiselyovd/ml-project-template).
@@ -36,6 +38,16 @@ Test set n = 2 772 abstracts across 28 GRNTI sections.
 Best Optuna trial (20 trials, val macro-F1): `lr=3.1e-5, weight_decay=0.012, warmup_ratio=0.147` → val macro-F1 = 73.1%.
 
 Baseline slightly ahead on top-1, main ahead by +0.9pp on top-5 — XLM-R's multilingual pre-training gives a better top-k rerank, while the ru-only ruBERT is marginally sharper on the argmax. Both ship with the model card on HF Hub.
+
+## Visualizations
+
+![Confusion matrix](docs/images/confusion_matrix.png)
+
+XLM-RoBERTa-base confusion matrix over the 28 GRNTI sections (test set, n = 2 772). Strong diagonal with off-diagonal mass concentrated between semantically adjacent sections.
+
+![Per-class F1](docs/images/per_class_f1.png)
+
+Per-class F1 across all 28 GRNTI sections, ranked. Highlights the spread between well-separated and harder, overlapping classes that drive the 72.3% macro-F1.
 
 ## Quick Start
 
