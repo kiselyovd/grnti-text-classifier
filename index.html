@@ -67,7 +67,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="cyan">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -123,7 +123,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
@@ -133,7 +133,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="cyan" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
@@ -450,6 +450,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#visualizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualizations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#navigation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -619,6 +630,7 @@
 
 
 <h1 id="grnti-text-classifier">grnti-text-classifier</h1>
+<p><img alt="grnti-text-classifier banner" src="images/banner.jpg" /></p>
 <p>Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model <strong>XLM-RoBERTa-base</strong>, fine-tuned with PyTorch Lightning on Russian research abstracts; baseline <strong>ruBERT-base-cased</strong>. Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, served by FastAPI as <code>/classify</code>.</p>
 <blockquote>
 <p><strong>Part of the <a href="https://github.com/kiselyovd#ml-portfolio">kiselyovd ML portfolio</a></strong> — production-grade ML projects sharing one <a href="https://github.com/kiselyovd/ml-project-template">cookiecutter template</a>.</p>
@@ -632,7 +644,7 @@
 <li><strong>Serving:</strong> FastAPI <code>/classify</code> returns <code>{top1_label, top1_prob, top5, truncated, input_length_tokens, request_id, model_version}</code>.</li>
 </ul>
 <h2 id="results">Results</h2>
-<p>Filled in from <code>reports/metrics_summary.json</code> once the v0.1.0 run completes (Task 18).</p>
+<p>Test set n = 2 772 abstracts across 28 GRNTI sections.</p>
 <table>
 <thead>
 <tr>
@@ -645,22 +657,27 @@
 </thead>
 <tbody>
 <tr>
-<td>XLM-RoBERTa-base (main)</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">—</td>
+<td><strong>XLM-RoBERTa-base (main)</strong></td>
+<td style="text-align: right;"><strong>72.4%</strong></td>
+<td style="text-align: right;"><strong>96.8%</strong></td>
+<td style="text-align: right;"><strong>72.3%</strong></td>
+<td style="text-align: right;"><strong>72.3%</strong></td>
 </tr>
 <tr>
 <td>ruBERT-base-cased (baseline)</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">—</td>
+<td style="text-align: right;">72.9%</td>
+<td style="text-align: right;">95.9%</td>
+<td style="text-align: right;">72.8%</td>
+<td style="text-align: right;">72.8%</td>
 </tr>
 </tbody>
 </table>
-<p>Test set n = 2 772.</p>
+<p>Baseline slightly ahead on top-1, main ahead by +0.9pp on top-5 — XLM-R's multilingual pre-training gives a better top-k rerank, while the ru-only ruBERT is marginally sharper on the argmax.</p>
+<h2 id="visualizations">Visualizations</h2>
+<p><img alt="Confusion matrix" src="images/confusion_matrix.png" /></p>
+<p>XLM-RoBERTa-base confusion matrix over the 28 GRNTI sections (test set, n = 2 772). Strong diagonal with off-diagonal mass concentrated between semantically adjacent sections.</p>
+<p><img alt="Per-class F1" src="images/per_class_f1.png" /></p>
+<p>Per-class F1 across all 28 GRNTI sections, ranked. Highlights the spread between well-separated and harder, overlapping classes that drive the 72.3% macro-F1.</p>
 <h2 id="navigation">Navigation</h2>
 <ul>
 <li><a href="architecture/">Architecture</a> — data flow, mermaid diagram, and main-vs-baseline design decisions.</li>
