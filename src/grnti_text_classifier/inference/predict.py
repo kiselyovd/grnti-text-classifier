@@ -1,4 +1,4 @@
-"""Inference CLI — load a checkpoint and predict on input(s)."""
+"""Inference CLI - load a checkpoint and predict on input(s)."""
 
 from __future__ import annotations
 

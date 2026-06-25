@@ -1,4 +1,4 @@
-"""GRNTI classifier routes — /health, /classify, /labels."""
+"""GRNTI classifier routes - /health, /classify, /labels."""
 
 from __future__ import annotations
 

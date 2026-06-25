@@ -21,7 +21,7 @@ def compute_metrics(
         Integer class indices, shape ``(n,)``.
     logits:
         Raw model outputs, shape ``(n, num_classes)``.  Accepts either a
-        NumPy array or a torch.Tensor — tensors are converted to NumPy
+        NumPy array or a torch.Tensor - tensors are converted to NumPy
         automatically.
     num_classes:
         Total number of label classes.

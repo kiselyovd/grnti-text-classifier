@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class TextPayload(BaseModel):
-    """Request body for text classification — raw abstract + optional token budget."""
+    """Request body for text classification - raw abstract + optional token budget."""
 
     text: str = Field(min_length=1, max_length=20_000)
     max_length: int = Field(default=256, ge=16, le=512)
@@ -33,7 +33,7 @@ class ClassificationResponse(BaseModel):
 
 
 class LabelEntry(BaseModel):
-    """Label catalog entry returned by `/labels` — numeric id plus human-readable name."""
+    """Label catalog entry returned by `/labels` - numeric id plus human-readable name."""
 
     label: int
     label_text: str

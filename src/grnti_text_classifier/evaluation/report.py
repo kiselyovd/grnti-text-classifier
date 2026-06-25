@@ -1,4 +1,4 @@
-"""Summary report builder — merges main and baseline metrics into a JSON file."""
+"""Summary report builder - merges main and baseline metrics into a JSON file."""
 
 from __future__ import annotations
 

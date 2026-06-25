@@ -11,13 +11,13 @@
 
 Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model **XLM-RoBERTa-base** (multilingual transformer, fine-tuned on Russian abstracts); baseline **ruBERT-base-cased** (single-language BERT). Both are Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, and served by FastAPI as `/classify`.
 
-> **Part of the [kiselyovd ML portfolio](https://github.com/kiselyovd#ml-portfolio)** — production-grade ML projects sharing one [cookiecutter template](https://github.com/kiselyovd/ml-project-template).
+> **Part of the [kiselyovd ML portfolio](https://github.com/kiselyovd#ml-portfolio)** - production-grade ML projects sharing one [cookiecutter template](https://github.com/kiselyovd/ml-project-template).
 
 📖 [English docs](https://kiselyovd.github.io/grnti-text-classifier/) • 🇷🇺 [Русский README](README.ru.md) • 🤗 [HF Hub model](https://huggingface.co/kiselyovd/grnti-text-classifier)
 
 ## Dataset
 
-[ai-forever/ru-scibench-grnti-classification](https://huggingface.co/datasets/ai-forever/ru-scibench-grnti-classification) — Russian scientific abstracts labelled with 28 GRNTI top-level sections. Split statistics:
+[ai-forever/ru-scibench-grnti-classification](https://huggingface.co/datasets/ai-forever/ru-scibench-grnti-classification) - Russian scientific abstracts labelled with 28 GRNTI top-level sections. Split statistics:
 
 | Split | Rows | Classes |
 |-------|-----:|--------:|
@@ -37,7 +37,7 @@ Test set n = 2 772 abstracts across 28 GRNTI sections.
 
 Best Optuna trial (20 trials, val macro-F1): `lr=3.1e-5, weight_decay=0.012, warmup_ratio=0.147` → val macro-F1 = 73.1%.
 
-Baseline slightly ahead on top-1, main ahead by +0.9pp on top-5 — XLM-R's multilingual pre-training gives a better top-k rerank, while the ru-only ruBERT is marginally sharper on the argmax. Both ship with the model card on HF Hub.
+Baseline slightly ahead on top-1, main ahead by +0.9pp on top-5 - XLM-R's multilingual pre-training gives a better top-k rerank, while the ru-only ruBERT is marginally sharper on the argmax. Both ship with the model card on HF Hub.
 
 ## Visualizations
 
@@ -89,4 +89,4 @@ Full documentation (architecture, training runbook, serving guide, API reference
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).

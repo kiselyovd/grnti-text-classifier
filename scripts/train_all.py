@@ -151,7 +151,7 @@ def main(argv: list[str] | None = None) -> None:
     # Step 1: Optuna sweep (optional)
     # ------------------------------------------------------------------
     if not args.skip_sweep:
-        print("[train_all] Step 1/6 — Optuna sweep …")
+        print("[train_all] Step 1/6 - Optuna sweep …")
         sweep_out_dir = artifacts_dir / "sweep"
         result = run_sweep(
             processed_dir,
@@ -168,13 +168,13 @@ def main(argv: list[str] | None = None) -> None:
         best_params = result["best_params"]
         print(f"[train_all] Best sweep params: {best_params}  val_f1={result['best_value']:.4f}")
     else:
-        print("[train_all] Step 1/6 — sweep skipped; using spec §12 defaults.")
+        print("[train_all] Step 1/6 - sweep skipped; using spec §12 defaults.")
         best_params = {"lr": 2e-5, "weight_decay": 0.01, "warmup_ratio": 0.1}
 
     # ------------------------------------------------------------------
     # Step 2: Main training (XLM-R)
     # ------------------------------------------------------------------
-    print("[train_all] Step 2/6 — training main model (XLM-R) …")
+    print("[train_all] Step 2/6 - training main model (XLM-R) …")
     main_hf: Path = train_one(
         build_main,
         "FacebookAI/xlm-roberta-base",
@@ -194,7 +194,7 @@ def main(argv: list[str] | None = None) -> None:
     # ------------------------------------------------------------------
     baseline_hf: Path | None = None
     if not args.skip_baseline:
-        print("[train_all] Step 3/6 — training baseline model (ruBERT) …")
+        print("[train_all] Step 3/6 - training baseline model (ruBERT) …")
         baseline_hf = train_one(
             build_baseline,
             "DeepPavlov/rubert-base-cased",
@@ -205,12 +205,12 @@ def main(argv: list[str] | None = None) -> None:
         )
         print(f"[train_all] Baseline model saved to: {baseline_hf}")
     else:
-        print("[train_all] Step 3/6 — baseline skipped.")
+        print("[train_all] Step 3/6 - baseline skipped.")
 
     # ------------------------------------------------------------------
     # Step 4: Test scoring
     # ------------------------------------------------------------------
-    print("[train_all] Step 4/6 — scoring on test split …")
+    print("[train_all] Step 4/6 - scoring on test split …")
     test_parquet = processed_dir / "test.parquet"
 
     main_logits, y_true = _score_hf_dir(main_hf, test_parquet, num_classes)
@@ -220,7 +220,7 @@ def main(argv: list[str] | None = None) -> None:
         json.dumps(main_metrics, indent=2, ensure_ascii=False), encoding="utf-8"
     )
     print(
-        f"[train_all] Main  — macro_f1={main_metrics['macro_f1']:.4f}  "
+        f"[train_all] Main - macro_f1={main_metrics['macro_f1']:.4f}  "
         f"top1={main_metrics['top1_accuracy']:.4f}"
     )
 
@@ -232,14 +232,14 @@ def main(argv: list[str] | None = None) -> None:
             json.dumps(baseline_metrics, indent=2, ensure_ascii=False), encoding="utf-8"
         )
         print(
-            f"[train_all] Baseline — macro_f1={baseline_metrics['macro_f1']:.4f}  "
+            f"[train_all] Baseline - macro_f1={baseline_metrics['macro_f1']:.4f}  "
             f"top1={baseline_metrics['top1_accuracy']:.4f}"
         )
 
     # ------------------------------------------------------------------
     # Step 5: Confusion matrix (main model)
     # ------------------------------------------------------------------
-    print("[train_all] Step 5/6 — saving confusion matrix …")
+    print("[train_all] Step 5/6 - saving confusion matrix …")
     labels = [idx_to_text[i] for i in range(num_classes)]
     cm_path = reports_dir / "confusion_matrix.png"
     save_confusion_matrix(y_true, main_preds, labels, cm_path)
@@ -248,7 +248,7 @@ def main(argv: list[str] | None = None) -> None:
     # ------------------------------------------------------------------
     # Step 6: Summary JSON
     # ------------------------------------------------------------------
-    print("[train_all] Step 6/6 — building summary …")
+    print("[train_all] Step 6/6 - building summary …")
     if baseline_metrics is not None:
         summary = build_summary(
             main_metrics, baseline_metrics, out_path=reports_dir / "metrics_summary.json"
@@ -258,7 +258,7 @@ def main(argv: list[str] | None = None) -> None:
             f"baseline_macro_f1={summary['baseline_macro_f1']}"
         )
     else:
-        print("[train_all] Baseline not run — skipping comparative summary.")
+        print("[train_all] Baseline not run - skipping comparative summary.")
 
     print("\n[train_all] All done.")
     print(f"  Artefacts : {artifacts_dir.resolve()}")

@@ -34,4 +34,4 @@ The ru-scibench-grnti-classification dataset is designed to be class-balanced, b
 
 ## HF-native `save_pretrained`
 
-Both models are serialised via the standard `PreTrainedModel.save_pretrained` / `tokenizer.save_pretrained` pattern into `artifacts/{main,baseline}/hf/`. This means any downstream consumer can load them with `AutoModelForSequenceClassification.from_pretrained(repo_id)` — zero extra config, no custom unpickling, and fully compatible with the HF Hub widget system for live inference demos on the model card.
+Both models are serialised via the standard `PreTrainedModel.save_pretrained` / `tokenizer.save_pretrained` pattern into `artifacts/{main,baseline}/hf/`. This means any downstream consumer can load them with `AutoModelForSequenceClassification.from_pretrained(repo_id)` - zero extra config, no custom unpickling, and fully compatible with the HF Hub widget system for live inference demos on the model card.

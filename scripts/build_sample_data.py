@@ -1,8 +1,8 @@
 """Build sample fixtures for HF widget and qualitative inspection.
 
 Outputs:
-  data/sample/sample.jsonl       — 20 sample abstracts (one per class)
-  data/widget/sample_payload.json — single-text widget payload
+  data/sample/sample.jsonl - 20 sample abstracts (one per class)
+  data/widget/sample_payload.json - single-text widget payload
 """
 
 from __future__ import annotations

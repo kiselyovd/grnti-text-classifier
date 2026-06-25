@@ -7,15 +7,15 @@
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![HF Hub](https://img.shields.io/badge/🤗%20HF%20Hub-model-FFD21E?style=for-the-badge)](https://huggingface.co/kiselyovd/grnti-text-classifier)
 
-Промышленный классификатор русских научных текстов по 28 разделам ГРНТИ (Государственный рубрикатор научно-технической информации). Основная модель — **XLM-RoBERTa-base** (многоязычный трансформер, дообученный на русских аннотациях); baseline — **ruBERT-base-cased** (одноязычный BERT). Обе модели конфигурируются через Hydra, настраиваются через Optuna, оцениваются по top-1 / top-5 accuracy и macro / weighted F1, и обслуживаются через FastAPI (`/classify`).
+Промышленный классификатор русских научных текстов по 28 разделам ГРНТИ (Государственный рубрикатор научно-технической информации). Основная модель - **XLM-RoBERTa-base** (многоязычный трансформер, дообученный на русских аннотациях); baseline - **ruBERT-base-cased** (одноязычный BERT). Обе модели конфигурируются через Hydra, настраиваются через Optuna, оцениваются по top-1 / top-5 accuracy и macro / weighted F1, и обслуживаются через FastAPI (`/classify`).
 
-> **Часть [ML-портфолио kiselyovd](https://github.com/kiselyovd#ml-portfolio)** — промышленные ML-проекты, основанные на одном [cookiecutter-шаблоне](https://github.com/kiselyovd/ml-project-template).
+> **Часть [ML-портфолио kiselyovd](https://github.com/kiselyovd#ml-portfolio)** - промышленные ML-проекты, основанные на одном [cookiecutter-шаблоне](https://github.com/kiselyovd/ml-project-template).
 
 📖 [Документация (EN)](https://kiselyovd.github.io/grnti-text-classifier/) • 🇬🇧 [English README](README.md) • 🤗 [Модель на HF Hub](https://huggingface.co/kiselyovd/grnti-text-classifier)
 
 ## Датасет
 
-[ai-forever/ru-scibench-grnti-classification](https://huggingface.co/datasets/ai-forever/ru-scibench-grnti-classification) — русские научные аннотации, размеченные по 28 верхнеуровневым разделам ГРНТИ. Статистика разбиения:
+[ai-forever/ru-scibench-grnti-classification](https://huggingface.co/datasets/ai-forever/ru-scibench-grnti-classification) - русские научные аннотации, размеченные по 28 верхнеуровневым разделам ГРНТИ. Статистика разбиения:
 
 | Сплит | Строк | Классов |
 |-------|------:|--------:|
@@ -35,7 +35,7 @@
 
 Лучший триал Optuna (20 попыток по val macro-F1): `lr=3,1e-5, weight_decay=0,012, warmup_ratio=0,147` → val macro-F1 = 73,1%.
 
-Baseline чуть впереди по top-1, основная модель лучше на +0,9 п.п. по top-5 — многоязычный pre-training XLM-R даёт более точный rerank top-k, а моноязычная ruBERT слегка выигрывает на argmax. Обе модели опубликованы на HF Hub с единым model card.
+Baseline чуть впереди по top-1, основная модель лучше на +0,9 п.п. по top-5 - многоязычный pre-training XLM-R даёт более точный rerank top-k, а моноязычная ruBERT слегка выигрывает на argmax. Обе модели опубликованы на HF Hub с единым model card.
 
 ## Быстрый старт
 
@@ -60,7 +60,7 @@ curl -X POST http://localhost:8000/classify \
   -d '{"text":"Исследование квантовой электродинамики в кристаллах."}'
 ```
 
-Полные контракты эндпоинтов, схемы запросов/ответов и описание переменных окружения — в [docs/serving.md](docs/serving.md).
+Полные контракты эндпоинтов, схемы запросов/ответов и описание переменных окружения - в [docs/serving.md](docs/serving.md).
 
 ## Переменные окружения
 
@@ -68,7 +68,7 @@ curl -X POST http://localhost:8000/classify \
 |------------|-----------|
 | `GRNTI_MAIN_DIR` | Директория со снапшотом `save_pretrained` основной модели XLM-RoBERTa. |
 | `GRNTI_BASELINE_DIR` | Директория со снапшотом `save_pretrained` baseline ruBERT. |
-| `GRNTI_LABEL_ENCODER` | Путь к `label_encoder.json` — маппинг целочисленных индексов на коды классов ГРНТИ. |
+| `GRNTI_LABEL_ENCODER` | Путь к `label_encoder.json` - маппинг целочисленных индексов на коды классов ГРНТИ. |
 | `GRNTI_MODEL_VERSION` | Возвращается в ответе `/health` и в теле классификации (например, `v0.1.0`). |
 
 ## Документация
@@ -77,4 +77,4 @@ curl -X POST http://localhost:8000/classify \
 
 ## Лицензия
 
-MIT — см. [LICENSE](LICENSE).
+MIT - см. [LICENSE](LICENSE).

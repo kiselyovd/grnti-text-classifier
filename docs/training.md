@@ -58,9 +58,9 @@ uv run python -m grnti_text_classifier.training.train model=main model.lr=3e-5 t
 
 | Parameter | Distribution | Range |
 |-----------|-------------|-------|
-| `lr` | log-uniform | 1e-5 – 5e-5 |
-| `weight_decay` | log-uniform | 1e-4 – 1e-1 |
-| `warmup_ratio` | uniform | 0.0 – 0.15 |
+| `lr` | log-uniform | 1e-5-5e-5 |
+| `weight_decay` | log-uniform | 1e-4-1e-1 |
+| `warmup_ratio` | uniform | 0.0-0.15 |
 
 The best trial is automatically written to `artifacts/best_params.json` and used as the starting point for the final full-epoch training run.
 
@@ -74,19 +74,19 @@ Reference hardware for the v0.1.0 run: RTX 3080 (10 GB VRAM), 32 GB RAM, Ubuntu 
 | `batch_size` | 16 |
 | `max_length` | 256 |
 | `gradient_clip_val` | 1.0 |
-| Estimated wall time (XLM-R, 5 epochs) | ~45–60 min |
-| Estimated wall time (ruBERT, 5 epochs) | ~30–40 min |
+| Estimated wall time (XLM-R, 5 epochs) | ~45-60 min |
+| Estimated wall time (ruBERT, 5 epochs) | ~30-40 min |
 
 `bf16-mixed` requires Ampere or newer (RTX 30xx / A-series). On older CUDA GPUs set `precision=16-mixed`; on CPU omit the flag entirely.
 
 ## Outputs
 
-- `artifacts/main/hf/` — XLM-RoBERTa `save_pretrained` snapshot (model + tokenizer).
-- `artifacts/baseline/hf/` — ruBERT `save_pretrained` snapshot.
-- `artifacts/main/logs/version_0/metrics.csv` — CSVLogger epoch-level metrics (loss, top1_acc, top5_acc, f1_macro).
-- `reports/metrics.json` — per-class precision/recall/F1 on test set.
-- `reports/metrics_summary.json` — top-1/top-5 accuracy + macro/weighted F1 summary for both models.
-- `reports/confusion_matrix.png` — 28×28 normalised confusion matrix for the main model.
+- `artifacts/main/hf/` - XLM-RoBERTa `save_pretrained` snapshot (model + tokenizer).
+- `artifacts/baseline/hf/` - ruBERT `save_pretrained` snapshot.
+- `artifacts/main/logs/version_0/metrics.csv` - CSVLogger epoch-level metrics (loss, top1_acc, top5_acc, f1_macro).
+- `reports/metrics.json` - per-class precision/recall/F1 on test set.
+- `reports/metrics_summary.json` - top-1/top-5 accuracy + macro/weighted F1 summary for both models.
+- `reports/confusion_matrix.png` - 28×28 normalised confusion matrix for the main model.
 
 ## HF mirror runbook
 

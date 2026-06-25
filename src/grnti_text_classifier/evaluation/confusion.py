@@ -1,4 +1,4 @@
-"""Confusion matrix visualisation — saves a seaborn heatmap PNG."""
+"""Confusion matrix visualisation - saves a seaborn heatmap PNG."""
 
 from __future__ import annotations
 

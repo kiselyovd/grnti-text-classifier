@@ -16,13 +16,13 @@ uvicorn grnti_text_classifier.serving.main:app --host 0.0.0.0 --port 8000 --work
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| `GET` | `/health` | Liveness probe — returns `{"status": "ok", "version": <model_version>}`. |
+| `GET` | `/health` | Liveness probe - returns `{"status": "ok", "version": <model_version>}`. |
 | `GET` | `/labels` | Returns the full list of 28 GRNTI label codes and human-readable names loaded from `label_encoder.json`. |
 | `POST` | `/classify` | Classify a single Russian text. Query param `model` selects `main` (default) or `baseline`. |
 
 `/classify` returns HTTP 422 if `text` is empty or whitespace-only, and HTTP 503 if the HF snapshot directory is missing from disk.
 
-## Request — `TextPayload`
+## Request - `TextPayload`
 
 Schema source: `grnti_text_classifier.serving.schemas.TextPayload`.
 
@@ -100,7 +100,7 @@ curl http://localhost:8000/labels
 ]
 ```
 
-### POST /classify — main model
+### POST /classify - main model
 
 ```bash
 curl -X POST http://localhost:8000/classify \
@@ -128,7 +128,7 @@ curl -X POST http://localhost:8000/classify \
 }
 ```
 
-### POST /classify — baseline model
+### POST /classify - baseline model
 
 ```bash
 curl -X POST "http://localhost:8000/classify?model=baseline" \

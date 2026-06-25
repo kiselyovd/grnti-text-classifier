@@ -58,15 +58,15 @@ def _format_metrics_table(summary: dict[str, Any]) -> str:
     main_model = summary.get("main_model", "XLM-RoBERTa-base (main)")
     baseline_model = summary.get("baseline_model", "ruBERT-base-cased (baseline)")
 
-    main_top1 = summary.get("main_top1", "—")
-    main_top5 = summary.get("main_top5", "—")
-    main_macro = summary.get("main_macro_f1", "—")
-    main_weighted = summary.get("main_weighted_f1", "—")
+    main_top1 = summary.get("main_top1", " - ")
+    main_top5 = summary.get("main_top5", " - ")
+    main_macro = summary.get("main_macro_f1", " - ")
+    main_weighted = summary.get("main_weighted_f1", " - ")
 
-    baseline_top1 = summary.get("baseline_top1", "—")
-    baseline_top5 = summary.get("baseline_top5", "—")
-    baseline_macro = summary.get("baseline_macro_f1", "—")
-    baseline_weighted = summary.get("baseline_weighted_f1", "—")
+    baseline_top1 = summary.get("baseline_top1", " - ")
+    baseline_top5 = summary.get("baseline_top5", " - ")
+    baseline_macro = summary.get("baseline_macro_f1", " - ")
+    baseline_weighted = summary.get("baseline_weighted_f1", " - ")
 
     header = "| Model | Top-1 | Top-5 | Macro F1 | Weighted F1 |"
     sep = "|-------|------:|------:|---------:|------------:|"
@@ -129,7 +129,7 @@ def main() -> None:
 
     if not main_metrics:
         print(
-            f"[warn] {args.metrics} not found or empty — metrics will show placeholder values.",
+            f"[warn] {args.metrics} not found or empty - metrics will show placeholder values.",
             file=sys.stderr,
         )
         main_metrics = {

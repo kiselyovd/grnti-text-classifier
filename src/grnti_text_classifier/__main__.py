@@ -6,7 +6,7 @@ import sys
 
 
 def main() -> int:
-    print("grnti-text-classifier — use make train / make evaluate / make serve")
+    print("grnti-text-classifier - use make train / make evaluate / make serve")
     return 0
 
 
