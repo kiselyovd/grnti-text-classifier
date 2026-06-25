@@ -691,17 +691,17 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <tr>
 <td><code>lr</code></td>
 <td>log-uniform</td>
-<td>1e-5 – 5e-5</td>
+<td>1e-5-5e-5</td>
 </tr>
 <tr>
 <td><code>weight_decay</code></td>
 <td>log-uniform</td>
-<td>1e-4 – 1e-1</td>
+<td>1e-4-1e-1</td>
 </tr>
 <tr>
 <td><code>warmup_ratio</code></td>
 <td>uniform</td>
-<td>0.0 – 0.15</td>
+<td>0.0-0.15</td>
 </tr>
 </tbody>
 </table>
@@ -734,23 +734,23 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 </tr>
 <tr>
 <td>Estimated wall time (XLM-R, 5 epochs)</td>
-<td>~45–60 min</td>
+<td>~45-60 min</td>
 </tr>
 <tr>
 <td>Estimated wall time (ruBERT, 5 epochs)</td>
-<td>~30–40 min</td>
+<td>~30-40 min</td>
 </tr>
 </tbody>
 </table>
 <p><code>bf16-mixed</code> requires Ampere or newer (RTX 30xx / A-series). On older CUDA GPUs set <code>precision=16-mixed</code>; on CPU omit the flag entirely.</p>
 <h2 id="outputs">Outputs</h2>
 <ul>
-<li><code>artifacts/main/hf/</code> — XLM-RoBERTa <code>save_pretrained</code> snapshot (model + tokenizer).</li>
-<li><code>artifacts/baseline/hf/</code> — ruBERT <code>save_pretrained</code> snapshot.</li>
-<li><code>artifacts/main/logs/version_0/metrics.csv</code> — CSVLogger epoch-level metrics (loss, top1_acc, top5_acc, f1_macro).</li>
-<li><code>reports/metrics.json</code> — per-class precision/recall/F1 on test set.</li>
-<li><code>reports/metrics_summary.json</code> — top-1/top-5 accuracy + macro/weighted F1 summary for both models.</li>
-<li><code>reports/confusion_matrix.png</code> — 28×28 normalised confusion matrix for the main model.</li>
+<li><code>artifacts/main/hf/</code> - XLM-RoBERTa <code>save_pretrained</code> snapshot (model + tokenizer).</li>
+<li><code>artifacts/baseline/hf/</code> - ruBERT <code>save_pretrained</code> snapshot.</li>
+<li><code>artifacts/main/logs/version_0/metrics.csv</code> - CSVLogger epoch-level metrics (loss, top1_acc, top5_acc, f1_macro).</li>
+<li><code>reports/metrics.json</code> - per-class precision/recall/F1 on test set.</li>
+<li><code>reports/metrics_summary.json</code> - top-1/top-5 accuracy + macro/weighted F1 summary for both models.</li>
+<li><code>reports/confusion_matrix.png</code> - 28×28 normalised confusion matrix for the main model.</li>
 </ul>
 <h2 id="hf-mirror-runbook">HF mirror runbook</h2>
 <p>Once training completes and artefacts are validated, publish to the HF Hub:</p>

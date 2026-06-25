@@ -536,7 +536,7 @@
   <a href="#request-textpayload" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Request — TextPayload
+        Request - TextPayload
       
     </span>
   </a>
@@ -642,7 +642,7 @@
   <a href="#post-classify-main-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /classify — main model
+        POST /classify - main model
       
     </span>
   </a>
@@ -653,7 +653,7 @@
   <a href="#post-classify-baseline-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        POST /classify — baseline model
+        POST /classify - baseline model
       
     </span>
   </a>
@@ -753,7 +753,7 @@ uvicorn<span class="w"> </span>grnti_text_classifier.serving.main:app<span class
 <tr>
 <td><code>GET</code></td>
 <td><code>/health</code></td>
-<td>Liveness probe — returns <code>{"status": "ok", "version": &lt;model_version&gt;}</code>.</td>
+<td>Liveness probe - returns <code>{"status": "ok", "version": &lt;model_version&gt;}</code>.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
@@ -768,7 +768,7 @@ uvicorn<span class="w"> </span>grnti_text_classifier.serving.main:app<span class
 </tbody>
 </table>
 <p><code>/classify</code> returns HTTP 422 if <code>text</code> is empty or whitespace-only, and HTTP 503 if the HF snapshot directory is missing from disk.</p>
-<h2 id="request-textpayload">Request — <code>TextPayload</code></h2>
+<h2 id="request-textpayload">Request - <code>TextPayload</code></h2>
 <p>Schema source: <code>grnti_text_classifier.serving.schemas.TextPayload</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TextPayload</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>   <span class="c1"># Russian scientific text to classify (required, non-empty)</span>
@@ -844,7 +844,7 @@ uvicorn<span class="w"> </span>grnti_text_classifier.serving.main:app<span class
 <span class="w">  </span><span class="err">...</span>
 <span class="p">]</span>
 </code></pre></div>
-<h3 id="post-classify-main-model">POST /classify — main model</h3>
+<h3 id="post-classify-main-model">POST /classify - main model</h3>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/classify<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;Исследование квантовой электродинамики в кристаллах.&quot;}&#39;</span>
@@ -867,7 +867,7 @@ uvicorn<span class="w"> </span>grnti_text_classifier.serving.main:app<span class
 <span class="w">  </span><span class="nt">&quot;model_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.1.0&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="post-classify-baseline-model">POST /classify — baseline model</h3>
+<h3 id="post-classify-baseline-model">POST /classify - baseline model</h3>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/classify?model=baseline&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;Исследование квантовой электродинамики в кристаллах.&quot;}&#39;</span>

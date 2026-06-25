@@ -633,7 +633,7 @@
 <h2 id="inverse-frequency-class-weights">Inverse-frequency class weights</h2>
 <p>The ru-scibench-grnti-classification dataset is designed to be class-balanced, but minor residual imbalances remain across 28 sections. <code>train_one</code> passes <code>class_weights</code> (computed per-batch from inverse normalised class frequencies on the train split) into <code>CrossEntropyLoss</code>. This has negligible effect on top-1 accuracy but meaningfully protects macro F1: without weighting the rarest classes tend to be under-penalised, dragging the macro average below the weighted average.</p>
 <h2 id="hf-native-save_pretrained">HF-native <code>save_pretrained</code></h2>
-<p>Both models are serialised via the standard <code>PreTrainedModel.save_pretrained</code> / <code>tokenizer.save_pretrained</code> pattern into <code>artifacts/{main,baseline}/hf/</code>. This means any downstream consumer can load them with <code>AutoModelForSequenceClassification.from_pretrained(repo_id)</code> — zero extra config, no custom unpickling, and fully compatible with the HF Hub widget system for live inference demos on the model card.</p>
+<p>Both models are serialised via the standard <code>PreTrainedModel.save_pretrained</code> / <code>tokenizer.save_pretrained</code> pattern into <code>artifacts/{main,baseline}/hf/</code>. This means any downstream consumer can load them with <code>AutoModelForSequenceClassification.from_pretrained(repo_id)</code> - zero extra config, no custom unpickling, and fully compatible with the HF Hub widget system for live inference demos on the model card.</p>
 
 
 
