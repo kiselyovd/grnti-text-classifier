@@ -31,9 +31,7 @@ def _load_label_maps(
 
     from grnti_text_classifier.data.grnti import LabelEncoder, _code_to_text
 
-    enc = LabelEncoder.from_json_dict(
-        json.loads(encoder_path.read_text(encoding="utf-8"))
-    )
+    enc = LabelEncoder.from_json_dict(json.loads(encoder_path.read_text(encoding="utf-8")))
     id2label = {
         str(i): f"{enc.idx_to_code[i]}: {_code_to_text(enc.idx_to_code[i])}"
         for i in range(enc.num_classes)
@@ -81,8 +79,10 @@ def main() -> None:
         backbone.config.label2id = label2id
         print(f"Injected id2label/label2id ({len(id2label)} classes) into config")
     else:
-        print(f"WARNING: label encoder not found at {args.label_encoder}; "
-              "config will keep default LABEL_* names")
+        print(
+            f"WARNING: label encoder not found at {args.label_encoder}; "
+            "config will keep default LABEL_* names"
+        )
 
     backbone.save_pretrained(out)
     print(f"Saved model weights + config to {out}")
