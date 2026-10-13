@@ -1,5 +1,7 @@
 # grnti-text-classifier
 
+[Open the interactive showcase](showcase.md)
+
 ![grnti-text-classifier banner](images/banner.jpg)
 
 Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model **XLM-RoBERTa-base**, fine-tuned with PyTorch Lightning on Russian research abstracts; baseline **ruBERT-base-cased**. Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, served by FastAPI as `/classify`.
