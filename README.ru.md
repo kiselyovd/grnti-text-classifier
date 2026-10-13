@@ -1,5 +1,7 @@
 # grnti-text-classifier
 
+[Интерактивная витрина проекта](https://kiselyovd.github.io/grnti-text-classifier/showcase/)
+
 [![CI](https://img.shields.io/github/actions/workflow/status/kiselyovd/grnti-text-classifier/test.yml?branch=main&style=for-the-badge&label=CI&logo=github)](https://github.com/kiselyovd/grnti-text-classifier/actions/workflows/test.yml)
 [![Docs](https://img.shields.io/badge/docs-mkdocs-526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://kiselyovd.github.io/grnti-text-classifier/)
 [![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/kiselyovd/grnti-text-classifier/badges/coverage.json&style=for-the-badge&logo=pytest&logoColor=white)](https://github.com/kiselyovd/grnti-text-classifier/actions/workflows/test.yml)

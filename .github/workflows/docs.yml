@@ -30,5 +30,8 @@ jobs:
       - name: Sync deps
         run: uv sync --all-groups
 
+      - name: Verify showcase production root and source data
+        run: uv run --all-groups python -m unittest discover -s tests -p test_showcase.py
+
       - name: Deploy docs
         run: uv run --all-groups mkdocs gh-deploy --force

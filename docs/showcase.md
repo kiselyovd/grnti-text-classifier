@@ -5,7 +5,7 @@ Browse the model label catalogue and the committed source abstracts. Search a ph
 <section class="sc-explorer" data-showcase="corpus" data-owner="kiselyovd" aria-label="Scientific text, 28 subject codes interactive showcase">
   <div class="sc-controls"></div>
   <div class="sc-workspace">
-    <article class="sc-stage sc-record"><h3>Labelled scientific abstracts</h3><p>The source corpus contains 20 committed examples. Its original text and labels are preserved in the structured data linked below.</p></article>
+    <article class="sc-stage sc-record"><h3>Пищевая промышленность</h3><p>Исследование влияния ферментных препаратов на процессы созревания зернового теста и качество хлеба. Досліджено вплив ферментних препаратів целюлази, ксиланази та глюкозооксидази на процеси дозріван- ня зернового тіста та якість зерно- вого хліба. Встановлено, що внесення дослідних ферментних препаратів у зернове тісто під час його приготу- вання сприяє інтенсифікації біохіміч- них і мікробіологічних процесів дозрі- вання. У результаті покращуються реологічні властивості тіста та під- вищуються показники якості гото- вих виробівКлючові слова: ферментні препа- рати, зерновий хліб, приготування тіста, целюлаза, ксиланаза, глюко- зооксидаза</p><p>Source record 10151. Corpus label: 650000. Original text is preserved.</p></article>
     <aside class="sc-details"><h3>Explore the example</h3><p>Use the controls to inspect this project's published artifacts.</p></aside>
   </div>
   <p class="sc-live" role="status">The source example is available above; interactive controls load when JavaScript is enabled.</p>
@@ -33,7 +33,6 @@ The published chart is preserved as an image. Its underlying numerical array is 
 
 The explorer uses published artifacts from [kiselyovd/grnti-text-classifier](https://github.com/kiselyovd/grnti-text-classifier). [Inspect the pinned source](https://github.com/kiselyovd/grnti-text-classifier/blob/35acaa1d9e75e149d97b971137d889a4825206bc/data/sample/sample.jsonl) and the [structured showcase data](assets/showcase/data.json).
 
-UI state stays in the current page. Detailed diagnostic events can be enabled with `?debug=1`; they contain selected IDs and modes, not sample content.
 
 ## See also
 
