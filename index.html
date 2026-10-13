@@ -12,7 +12,7 @@
       
       
       
-        <link rel="next" href="architecture/">
+        <link rel="next" href="showcase/">
       
       
         
@@ -50,6 +50,8 @@
     
     
       <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="assets/showcase/explorer.css">
     
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -232,6 +234,44 @@
     
   
   Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="showcase/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Showcase
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="project-guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Project guide
 
       </a>
     </li>
@@ -508,6 +548,60 @@
   
   
     <li class="md-nav__item">
+      <a href="showcase/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Showcase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="project-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="architecture/" class="md-nav__link">
         
   
@@ -630,6 +724,7 @@
 
 
 <h1 id="grnti-text-classifier">grnti-text-classifier</h1>
+<p><a href="showcase/">Open the interactive showcase</a></p>
 <p><img alt="grnti-text-classifier banner" src="images/banner.jpg" /></p>
 <p>Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model <strong>XLM-RoBERTa-base</strong>, fine-tuned with PyTorch Lightning on Russian research abstracts; baseline <strong>ruBERT-base-cased</strong>. Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, served by FastAPI as <code>/classify</code>.</p>
 <blockquote>
@@ -753,6 +848,8 @@
     
     
       <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="assets/showcase/explorer.js" type="module"></script>
       
     
   </body>
