@@ -59,7 +59,10 @@ class NativeClassifier:
         self.device = device
         if model_dir is None:
             source = CONTRACT["repo_id"]
-            options: dict[str, Any] = {"revision": CONTRACT["revision"], "token": False}
+            options: dict[str, Any] = {
+                "revision": CONTRACT["revision"],
+                "token": False,  # nosec B105
+            }  # Public reads explicitly disable cached credentials.
             weights = Path(
                 hf_hub_download(
                     source, CONTRACT["weights_file"], revision=CONTRACT["revision"], token=False
