@@ -76,3 +76,19 @@ def test_space_metadata_uses_supported_palette():
     for line in readme.splitlines():
         if line.startswith(("colorFrom:", "colorTo:")):
             assert line.split(":", 1)[1].strip() in allowed
+
+
+def test_actual_production_launch_uses_accessible_theme_and_owner_image(monkeypatch):
+    import runpy
+
+    captured = {}
+
+    def launch(_self, **options):
+        captured.update(options)
+
+    monkeypatch.setattr(gr.Blocks, "launch", launch)
+    runpy.run_path(str(Path(__file__).with_name("app.py")), run_name="__main__")
+    assert captured["theme"].button_primary_background_fill == "*primary_700"
+    assert captured["theme"].button_primary_background_fill_dark == "*primary_700"
+    assert "image.alt" in captured["js"]
+    assert "kiselyovd/avatar" in captured["js"]
