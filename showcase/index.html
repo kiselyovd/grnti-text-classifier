@@ -53,7 +53,7 @@
     
       <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../assets/accessibility.css?v=20261015-a11y">
+      <link rel="stylesheet" href="../assets/accessibility.css?v=20261015-a11y3">
     
       <link rel="stylesheet" href="../assets/showcase/explorer.css">
     
@@ -752,6 +752,7 @@
 
 
 <h1 id="scientific-text-28-subject-codes">Scientific text, 28 subject codes</h1>
+<p><strong><a href="https://huggingface.co/spaces/kiselyovd/grnti-text-classifier-demo">Classify your own abstract</a></strong> · <a href="../EVALUATION/">Replay and numerical evidence</a></p>
 <p>Browse the model label catalogue and the committed source abstracts. Search a phrase or a subject, then reveal the dataset label to explore how the task is defined.</p>
 <section class="sc-explorer" data-showcase="corpus" data-owner="kiselyovd" aria-label="Scientific text, 28 subject codes interactive showcase">
   <div class="sc-controls"></div>
@@ -767,19 +768,19 @@
 <table>
 <thead>
 <tr>
-<th>Published model-card results</th>
+<th>Evaluation evidence</th>
 <th>Top-1 accuracy</th>
 <th>Top-5 accuracy</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>XLM-RoBERTa</td>
-<td>72.4%</td>
-<td>96.8%</td>
+<td>XLM-RoBERTa · native replay</td>
+<td>72.37%</td>
+<td>96.75%</td>
 </tr>
 <tr>
-<td>ruBERT</td>
+<td>ruBERT · historical report</td>
 <td>72.9%</td>
 <td>95.9%</td>
 </tr>
@@ -789,7 +790,7 @@
 <p>The 20 abstracts carry existing corpus labels. Their original language, code strings, and record IDs are preserved; the model catalogue contains eight additional subjects without a committed sample. The two agriculture-related codes remain separate even though their displayed names match.</p>
 <h2 id="error-analysis-figures">Error-analysis figures</h2>
 <p><img alt="Published per-class F1 figure" src="../images/per_class_f1.png" /></p>
-<p>The published chart is preserved as an image. Its underlying numerical array is not present in the tracked repository, so the explorer does not derive new per-class scores from it.</p>
+<p>The main-model chart is regenerated from the hash-bound logits and targets in <code>reports/replay-native.npz</code>. <a href="../EVALUATION/">Replay protocol</a>. The historical ruBERT prediction arrays remain unavailable.</p>
 <h2 id="sources-and-reproduction">Sources and reproduction</h2>
 <p>The explorer uses published artifacts from <a href="https://github.com/kiselyovd/grnti-text-classifier">kiselyovd/grnti-text-classifier</a>. <a href="https://github.com/kiselyovd/grnti-text-classifier/blob/35acaa1d9e75e149d97b971137d889a4825206bc/data/sample/sample.jsonl">Inspect the pinned source</a> and the <a href="../assets/showcase/data.json">structured showcase data</a>.</p>
 <h2 id="see-also">See also</h2>
