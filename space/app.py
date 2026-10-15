@@ -65,6 +65,8 @@ def classify(
         raise gr.Error(copy["empty"] if str(error) == "empty_text" else copy["long"]) from None
     try:
         result = infer(cleaned)
+    except gr.Error as error:
+        raise gr.Error(copy["quota"] if "ZeroGPU" in str(error) else copy["failed"]) from None
     except Exception:
         # Avoid framework tracebacks containing tokenized inputs or visitor text.
         raise gr.Error(copy["failed"]) from None

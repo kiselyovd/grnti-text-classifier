@@ -92,3 +92,13 @@ def test_actual_production_launch_uses_accessible_theme_and_owner_image(monkeypa
     assert captured["theme"].button_primary_background_fill_dark == "*primary_700"
     assert "image.alt" in captured["js"]
     assert "kiselyovd/avatar" in captured["js"]
+
+
+def test_service_quota_has_a_localized_message(monkeypatch):
+    def quota(_text):
+        raise gr.Error("ZeroGPU quota exceeded")
+
+    monkeypatch.setattr(app, "infer", quota)
+    for language in ("en", "ru"):
+        with pytest.raises(gr.Error, match=app.COPY[language]["quota"]):
+            app.classify("Scientific abstract", language)
