@@ -1,0 +1,16 @@
+{
+  "asset": "docs/images/social-preview.png",
+  "sha256": "2b47862190a7094ec76b03609e41079bbe46dc5fe6a0b985d144e9765d9faf50",
+  "width": 1280,
+  "height": 640,
+  "bytes": 87789,
+  "kind": "project evidence composition; no generated model output",
+  "note": "Pinned native model; uncalibrated softmax scores; illustrative input, not an evaluation result",
+  "sources": [
+    {
+      "path": "reports\\provenance\\showcase-inference.json",
+      "sha256": "8b2f4123077fd6756b2ce32ac7f337ab341c0fea636783dcccb79c379151e955"
+    }
+  ],
+  "renderer": "portfolio-integrity-2026-10-15/render_previews.py"
+}

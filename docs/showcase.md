@@ -1,5 +1,7 @@
 # Scientific text, 28 subject codes
 
+**[Classify your own abstract](https://huggingface.co/spaces/kiselyovd/grnti-text-classifier-demo)** · [Replay and numerical evidence](EVALUATION.md)
+
 Browse the model label catalogue and the committed source abstracts. Search a phrase or a subject, then reveal the dataset label to explore how the task is defined.
 
 <section class="sc-explorer" data-showcase="corpus" data-owner="kiselyovd" aria-label="Scientific text, 28 subject codes interactive showcase">
@@ -14,10 +16,10 @@ Browse the model label catalogue and the committed source abstracts. Search a ph
 
 ## Model comparison
 
-| Published model-card results | Top-1 accuracy | Top-5 accuracy |
+| Evaluation evidence | Top-1 accuracy | Top-5 accuracy |
 |---|---|---|
-| XLM-RoBERTa | 72.4% | 96.8% |
-| ruBERT | 72.9% | 95.9% |
+| XLM-RoBERTa · native replay | 72.37% | 96.75% |
+| ruBERT · historical report | 72.9% | 95.9% |
 
 These operating points answer different questions: one automatic assignment or a candidate list for human review. [Published model card](https://huggingface.co/kiselyovd/grnti-text-classifier/blob/24fbe75c27112612a464935c95465def6af788ef/README.md).
 
@@ -27,7 +29,7 @@ The 20 abstracts carry existing corpus labels. Their original language, code str
 
 ![Published per-class F1 figure](images/per_class_f1.png)
 
-The published chart is preserved as an image. Its underlying numerical array is not present in the tracked repository, so the explorer does not derive new per-class scores from it.
+The main-model chart is regenerated from the hash-bound logits and targets in `reports/replay-native.npz`. [Replay protocol](EVALUATION.md). The historical ruBERT prediction arrays remain unavailable.
 
 ## Sources and reproduction
 
