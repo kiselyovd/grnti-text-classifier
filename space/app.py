@@ -21,7 +21,7 @@ CONTENT = json.loads(Path(__file__).with_name("copy.json").read_text(encoding="u
 EXAMPLES = CONTENT["EXAMPLES"]
 COPY = CONTENT["COPY"]
 
-DEVICE = os.environ.get("GRNTI_DEVICE", "cuda" if spaces else "cpu")
+DEVICE = os.environ.get("GRNTI_DEVICE", "cpu")
 
 
 @lru_cache(maxsize=1)
