@@ -1,0 +1,7 @@
+torch==2.8.0
+transformers==5.5.4
+huggingface-hub==1.22.0
+gradio==6.30.0
+numpy==2.4.4
+pandas==2.3.3
+safetensors==0.8.0

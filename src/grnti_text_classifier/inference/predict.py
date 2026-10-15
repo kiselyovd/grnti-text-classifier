@@ -1,4 +1,4 @@
-"""Inference CLI - load a checkpoint and predict on input(s)."""
+"""Run the pinned native GRNTI model on a title or abstract."""
 
 from __future__ import annotations
 
@@ -7,38 +7,30 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ..utils import configure_logging, get_logger
-
-log = get_logger(__name__)
+from .native import NativeClassifier
 
 
-def load_model(checkpoint_path: str | Path) -> Any:
-    """Load a Lightning module from checkpoint, rebuilding the backbone from hparams."""
-    import torch
-
-    from ..models import GRNTIClassifier, build_main
-
-    ckpt = torch.load(str(checkpoint_path), map_location="cpu", weights_only=False)
-    hp = ckpt.get("hyper_parameters", {})
-    num_labels = hp.get("num_labels", 28)
-    backbone = build_main(num_labels=int(num_labels))
-    return GRNTIClassifier.load_from_checkpoint(str(checkpoint_path), model=backbone)
+def load_model(model_dir: str | Path | None = None) -> NativeClassifier:
+    """Load reviewed native safetensors; local directories must contain the same artifact."""
+    return NativeClassifier(model_dir=model_dir)
 
 
-def predict(model: Any, input_path: str | Path) -> dict[str, Any]:
-    """Run a single prediction. Returns a task-specific result dict."""
-    raise NotImplementedError("Override predict() per project")
+def predict(model: NativeClassifier, input_path: str | Path) -> dict[str, Any]:
+    """Classify UTF-8 file contents with the production tokenizer and label mapping."""
+    return model.classify(Path(input_path).read_text(encoding="utf-8"))
 
 
 def main() -> None:
+    """Use --text for direct input or --input for a UTF-8 file."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--checkpoint", required=True)
-    parser.add_argument("--input", required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--text")
+    source.add_argument("--input", type=Path)
+    parser.add_argument("--model-dir", type=Path)
     args = parser.parse_args()
-    configure_logging()
-    model = load_model(args.checkpoint)
-    result = predict(model, args.input)
-    print(json.dumps(result, indent=2))
+    model = load_model(args.model_dir)
+    result = model.classify(args.text) if args.text is not None else predict(model, args.input)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

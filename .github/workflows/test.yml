@@ -36,11 +36,11 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Sync deps
-        run: uv sync --all-groups --python ${{ matrix.python-version }}
+        run: uv sync --frozen --all-groups --python ${{ matrix.python-version }}
 
       - name: Run pytest
         run: >-
-          uv run --all-groups --python ${{ matrix.python-version }}
+          uv run --frozen --all-groups --python ${{ matrix.python-version }}
           pytest -m "not slow"
           --cov=grnti_text_classifier
           --cov-fail-under=10

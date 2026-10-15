@@ -35,6 +35,10 @@ def _env_path(var: str) -> Path:
 
 
 def _load_labels() -> dict[int, str]:
+    if not os.environ.get(_ENV_ENC):
+        from ..inference.native import CONTRACT
+
+        return {int(k): v for k, v in CONTRACT["id2label"].items()}
     enc_path = _env_path(_ENV_ENC)
     data = json.loads(enc_path.read_text(encoding="utf-8"))
     return {int(k): v for k, v in data["idx_to_text"].items()}
@@ -44,8 +48,12 @@ def _load_labels() -> dict[int, str]:
 def _load_model(tag: Literal["main", "baseline"]):
     var = _ENV_MAIN if tag == "main" else _ENV_BASE
     model_dir = _env_path(var)
-    tok = AutoTokenizer.from_pretrained(str(model_dir))
-    model = AutoModelForSequenceClassification.from_pretrained(str(model_dir))
+    tok = AutoTokenizer.from_pretrained(
+        str(model_dir), local_files_only=True, trust_remote_code=False
+    )
+    model = AutoModelForSequenceClassification.from_pretrained(
+        str(model_dir), local_files_only=True, trust_remote_code=False, use_safetensors=True
+    )
     if torch.cuda.is_available():
         model = model.cuda()
     model.train(False)
@@ -81,7 +89,9 @@ def classify(
     if torch.cuda.is_available():
         enc = {k: v.cuda() for k, v in enc.items()}
     input_length_tokens = int(enc["attention_mask"].sum().item())
-    truncated = input_length_tokens >= payload.max_length
+    truncated = (
+        len(tok(payload.text, truncation=False, verbose=False)["input_ids"]) > payload.max_length
+    )
 
     with torch.inference_mode():
         out = mdl(**enc)

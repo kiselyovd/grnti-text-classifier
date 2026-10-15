@@ -1,0 +1,15 @@
+{
+  "status": "reported",
+  "source": "https://huggingface.co/kiselyovd/grnti-text-classifier/raw/24fbe75c27112612a464935c95465def6af788ef/README.md",
+  "source_sha256": "edf9b0dd7f5d0f4eb372de9e24bb742505e79c9b6d4e03674635a388cdefee4a",
+  "test_examples_reported": 2772,
+  "training_membership_verified": false,
+  "numerical_predictions_available": false,
+  "metrics": {
+    "top1_accuracy": 0.7237,
+    "top5_accuracy": 0.9675,
+    "macro_f1": 0.723,
+    "weighted_f1": 0.723
+  },
+  "scope": "Imported values from the pinned historical model card. Numerical predictions and per-class report arrays are not tracked; this task verified native inference, not a full test-set replay."
+}

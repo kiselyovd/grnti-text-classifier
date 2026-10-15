@@ -1,5 +1,5 @@
 site_name: grnti-text-classifier
-site_description: Production-grade Russian multi-class text classifier (GRNTI).
+site_description: Russian scientific-text classification with pinned artifacts and evaluation provenance.
 repo_url: https://github.com/kiselyovd/grnti-text-classifier
 theme:
   name: material

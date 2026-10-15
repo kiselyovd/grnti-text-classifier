@@ -1,0 +1,9 @@
+.gradio-container { width: 100% !important; max-width: 1600px !important; margin-inline: auto !important; padding: clamp(16px, 2vw, 24px) !important; }
+#header { align-items: center; margin-bottom: 8px; }
+#intro, #intro .prose { overflow: visible !important; }
+#intro h1 { margin: 0; line-height: 1.2; }
+#subjects td { white-space: normal !important; overflow-wrap: anywhere; }
+@media (max-width: 640px) { #header { gap: 16px; } #subjects td { padding-inline: 8px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+#subjects .text, #subjects .cell-wrap { font-family: var(--font) !important; }

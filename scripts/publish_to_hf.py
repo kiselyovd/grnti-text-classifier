@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -128,18 +127,13 @@ def main() -> None:
     summary: dict[str, Any] = _load_json(Path(args.summary))
 
     if not main_metrics:
-        print(
-            f"[warn] {args.metrics} not found or empty - metrics will show placeholder values.",
-            file=sys.stderr,
+        raise SystemExit(
+            f"Missing evaluation report: {args.metrics}. "
+            "Publication requires a numerical report; unavailable metrics are not zeros."
         )
-        main_metrics = {
-            "top1_accuracy": 0.0,
-            "top5_accuracy": 0.0,
-            "macro_f1": 0.0,
-            "weighted_f1": 0.0,
-            "num_classes": 28,
-            "n": 0,
-        }
+    required = {"top1_accuracy", "top5_accuracy", "macro_f1", "weighted_f1", "n", "num_classes"}
+    if not required.issubset(main_metrics) or main_metrics["n"] <= 0:
+        raise SystemExit("Evaluation report is incomplete or has no evaluated examples")
 
     context: dict[str, Any] = {
         "repo_id": args.repo_id,
@@ -173,7 +167,10 @@ def main() -> None:
     print(f"Wrote model card to {readme_path}")
 
     hf_api = HfApi()
-    hf_api.create_repo(repo_id=args.repo_id, repo_type="model", exist_ok=True)
+    identity = hf_api.whoami()
+    if identity.get("name") != "kiselyovd" or args.repo_id != "kiselyovd/grnti-text-classifier":
+        raise SystemExit("Refusing publication outside the reviewed personal account/repository")
+    hf_api.repo_info(repo_id=args.repo_id, repo_type="model")
 
     hf_api.upload_folder(
         folder_path=str(main_dir),

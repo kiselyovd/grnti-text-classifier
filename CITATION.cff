@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Cite this software and the source corpus separately."
+title: "Scientific-Text Classification"
+type: software
+authors:
+  - family-names: Kiselyov
+    given-names: Daniil
+repository-code: "https://github.com/kiselyovd/grnti-text-classifier"
+license: MIT

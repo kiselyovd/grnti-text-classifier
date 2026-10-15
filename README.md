@@ -10,22 +10,36 @@ Classify scientific abstracts into 28 GRNTI subject codes. XLM-RoBERTa is the ma
 
 ## Published operating points
 
-Reported test set: 2,772 abstracts across 28 sections.
+<!-- ARTIFACT-MANIFEST:START -->
+### Current artifact and evaluation
 
-| Model | Top-1 accuracy | Top-5 accuracy | Macro F1 |
-|---|---|---|---|
-| XLM-RoBERTa | 72.4% | 96.8% | 72.3% |
-| ruBERT | 72.9% | 95.9% | 72.8% |
+**Historical model-card results; full numerical replay unavailable**
 
-One automatic assignment and a candidate list for review are different use cases. These figures alone do not establish why the models differ. [Published model card](https://huggingface.co/kiselyovd/grnti-text-classifier).
+| Metric | Value |
+|---|---:|
+| Top-1 accuracy | 72.37% |
+| Top-5 accuracy | 96.75% |
+| Macro F1 | 72.30% |
+
+Imported values from the pinned historical model card. Numerical predictions and per-class report arrays are not tracked; this task verified native inference, not a full test-set replay.
+
+[Evaluation record](https://github.com/kiselyovd/grnti-text-classifier/blob/main/reports/reported-native.json) · [Pinned model](https://huggingface.co/kiselyovd/grnti-text-classifier/tree/24fbe75c27112612a464935c95465def6af788ef)
+<!-- ARTIFACT-MANIFEST:END -->
+
+Baseline ruBERT reports 72.9% top-1 / 95.9% top-5 / 72.8% macro F1 in the historical source card; its prediction arrays are unavailable. These operating points do not explain their difference.
+
+**[Classify your own abstract](https://huggingface.co/spaces/kiselyovd/grnti-text-classifier-demo)** · [Browse the source corpus](https://kiselyovd.github.io/grnti-text-classifier/showcase/)
 
 ## Use the model
 
 ```python
 from transformers import pipeline
 
-classifier = pipeline("text-classification", model="kiselyovd/grnti-text-classifier", top_k=5)
-print(classifier("Исследование квантовой электродинамики в кристаллах."))
+classifier = pipeline("text-classification", model="kiselyovd/grnti-text-classifier",
+    revision="24fbe75c27112612a464935c95465def6af788ef",
+    trust_remote_code=False, top_k=5)
+print(classifier("Исследование квантовой электродинамики в кристаллах.",
+                 truncation=True, max_length=256))
 ```
 
 Outputs use the model's original code/name label map. [Source abstracts](data/sample/sample.jsonl) · [Training and API setup](docs/project-guide.md#quick-start) · [Русский README](README.ru.md)

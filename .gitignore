@@ -28,5 +28,9 @@ data/processed/*
 .env.local
 
 # Local training artefacts + mkdocs build output
-reports/
+reports/*
+!reports/reported-native.json
+!reports/replay-native.json
+!reports/replay-native.npz
+!reports/provenance/
 site/

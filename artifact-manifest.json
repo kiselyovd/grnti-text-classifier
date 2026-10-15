@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "project": "grnti-text-classifier",
+  "hub": {
+    "repo_id": "kiselyovd/grnti-text-classifier",
+    "repo_type": "model",
+    "revision": "24fbe75c27112612a464935c95465def6af788ef",
+    "files": [
+      {
+        "path": "model.safetensors",
+        "role": "weights",
+        "sha256": "324f0ca0b15fd30f8b0c9bd2e9db4594b88119489f3a8d1df0169a455ca1eba4"
+      },
+      {
+        "path": "config.json",
+        "role": "label_contract",
+        "sha256": "06169b0e38121b15c67f5fbd24057ec588573e6bb7ce30b4a1b45a7f1ced0e81"
+      }
+    ]
+  },
+  "input": {
+    "type": "Russian scientific title/abstract",
+    "max_characters": 20000,
+    "max_tokens": 256,
+    "truncation": true
+  },
+  "output": {
+    "classes": 28,
+    "labels": "src/grnti_text_classifier/inference/model-contract.json",
+    "codes": "exact checkpoint strings, without padding",
+    "scores": "uncalibrated softmax"
+  },
+  "dataset": {
+    "repo_id": "ai-forever/ru-scibench-grnti-classification",
+    "revision": "a984f8a65b2e9fae7a347bf7761b0eaad79c73a1",
+    "training_revision_recorded": false,
+    "scope": "Current source pinned for inspection; historical training dataset revision was not recorded."
+  },
+  "evaluation": {
+    "status": "reported",
+    "label": "Historical model-card results; full numerical replay unavailable",
+    "scope": "Imported values from the pinned historical model card. Numerical predictions and per-class report arrays are not tracked; this task verified native inference, not a full test-set replay.",
+    "training_membership_verified": false,
+    "report": "reports/reported-native.json",
+    "report_sha256": "192a110adfde7a069a989efc30d12cd7e9079656d7e7b4e14f19f12279c6b182",
+    "metrics": [
+      {
+        "name": "Top-1 accuracy",
+        "pointer": "/metrics/top1_accuracy"
+      },
+      {
+        "name": "Top-5 accuracy",
+        "pointer": "/metrics/top5_accuracy"
+      },
+      {
+        "name": "Macro F1",
+        "pointer": "/metrics/macro_f1"
+      }
+    ]
+  },
+  "licenses": {
+    "code": {
+      "id": "MIT",
+      "path": "LICENSE"
+    },
+    "dataset": {
+      "declared": "mit",
+      "source": "https://huggingface.co/datasets/ai-forever/ru-scibench-grnti-classification"
+    },
+    "weights": {
+      "declared": "MIT",
+      "upstream": "FacebookAI/xlm-roberta-base",
+      "upstream_license": "MIT"
+    }
+  },
+  "demo": {
+    "url": "https://huggingface.co/spaces/kiselyovd/grnti-text-classifier-demo",
+    "model_contract": "space/model-contract.json"
+  }
+}

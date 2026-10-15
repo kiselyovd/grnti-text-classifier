@@ -1,0 +1,79 @@
+{
+  "EXAMPLES": {
+    "networks": "Предложен метод обнаружения аномалий в компьютерных сетях на основе нейронных сетей. Исследуется устойчивость классификатора к изменению распределения сетевого трафика. Эксперименты сравнивают точность и вычислительную сложность алгоритмов.",
+    "medicine": "Исследована связь артериального давления и факторов образа жизни с наличием сердечно-сосудистых заболеваний. Проведён анализ клинических наблюдений с использованием методов статистического моделирования. Обсуждаются ограничения выборки и интерпретация выявленных ассоциаций.",
+    "language": "Статья посвящена синтаксическим особенностям русского научного текста. На материале корпуса аннотаций исследуются средства выражения причинно-следственных отношений и особенности терминологической лексики."
+  },
+  "COPY": {
+    "en": {
+      "title": "GRNTI Classifier",
+      "input": "Scientific text in Russian",
+      "placeholder": "Paste a title and abstract…",
+      "examples": "Try an example",
+      "choices": [
+        [
+          "Computer networks",
+          "networks"
+        ],
+        [
+          "Clinical research",
+          "medicine"
+        ],
+        [
+          "Linguistics",
+          "language"
+        ]
+      ],
+      "run": "Classify text",
+      "output": "Top five subjects",
+      "headers": [
+        "GRNTI code",
+        "Full subject name",
+        "Model score"
+      ],
+      "empty": "Enter a title or abstract first.",
+      "long": "Use at most 20,000 characters.",
+      "failed": "The model is unavailable. Please try again shortly.",
+      "ready": "",
+      "cut": "Only the first 256 tokens were classified.",
+      "about_title": "About this model",
+      "raw": "Prediction data",
+      "about": "[Model & weights](https://huggingface.co/kiselyovd/grnti-text-classifier) · [Source & evaluation](https://github.com/kiselyovd/grnti-text-classifier) · By [kiselyovd](https://huggingface.co/kiselyovd)\n\nXLM-RoBERTa assigns one of 28 subjects using the first 256 tokens. Scores are uncalibrated softmax outputs, not a measure of scientific validity. Subject names and code strings come directly from the checkpoint; codes 680000 and 683500 have the same stored name. Examples are author-written illustrations, not a benchmark.\n\nText is processed by this public HF Space. Avoid submitting confidential material. The application does not log or cache submitted text."
+    },
+    "ru": {
+      "title": "Классификатор ГРНТИ",
+      "input": "Научный текст на русском",
+      "placeholder": "Вставь название и аннотацию…",
+      "examples": "Попробовать пример",
+      "choices": [
+        [
+          "Компьютерные сети",
+          "networks"
+        ],
+        [
+          "Клиническое исследование",
+          "medicine"
+        ],
+        [
+          "Языкознание",
+          "language"
+        ]
+      ],
+      "run": "Определить рубрику",
+      "output": "Пять наиболее вероятных рубрик",
+      "headers": [
+        "Код ГРНТИ",
+        "Полное название рубрики",
+        "Оценка модели"
+      ],
+      "empty": "Сначала введи название или аннотацию.",
+      "long": "Максимум 20 000 символов.",
+      "failed": "Модель пока недоступна. Попробуй ещё раз чуть позже.",
+      "ready": "",
+      "cut": "Классифицированы только первые 256 токенов.",
+      "about_title": "О модели",
+      "raw": "Данные предсказания",
+      "about": "[Модель и веса](https://huggingface.co/kiselyovd/grnti-text-classifier) · [Код и оценка](https://github.com/kiselyovd/grnti-text-classifier) · Автор — [kiselyovd](https://huggingface.co/kiselyovd)\n\nXLM-RoBERTa выбирает одну из 28 рубрик по первым 256 токенам. Оценки — некалиброванные значения softmax; они не оценивают научную достоверность текста. Названия и строки кодов взяты из checkpoint: у кодов 680000 и 683500 совпадают сохранённые названия. Примеры написаны для иллюстрации, это не тестовый набор.\n\nТекст обрабатывается публичным HF Space. Не отправляй конфиденциальные материалы. Приложение не записывает и не кеширует введённый текст."
+    }
+  }
+}

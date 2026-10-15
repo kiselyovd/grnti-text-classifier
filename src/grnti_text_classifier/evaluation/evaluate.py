@@ -43,7 +43,7 @@ def main() -> None:
     df = pd.read_parquet(args.split)
     with open(args.label_encoder, encoding="utf-8") as fh:
         encoder = json.load(fh)
-    num_classes = len(encoder)
+    num_classes = len(encoder["idx_to_text"])
 
     texts = df["text"].tolist()
     all_logits: list[np.ndarray] = []
