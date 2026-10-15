@@ -1,16 +1,51 @@
 {
+  "schema_version": 2,
   "asset": "docs/images/social-preview.png",
-  "sha256": "2b47862190a7094ec76b03609e41079bbe46dc5fe6a0b985d144e9765d9faf50",
   "width": 1280,
   "height": 640,
-  "bytes": 87789,
-  "kind": "project evidence composition; no generated model output",
-  "note": "Pinned native model; uncalibrated softmax scores; illustrative input, not an evaluation result",
-  "sources": [
+  "kind": "identity preview composed from a reviewed actual project figure",
+  "source": {
+    "repository": "kiselyovd/grnti-text-classifier",
+    "revision": "278c077b370d4bcbc9413a69a55fc5a7979391ed",
+    "path": "docs/images/social-preview.png",
+    "sha256": "2b47862190a7094ec76b03609e41079bbe46dc5fe6a0b985d144e9765d9faf50"
+  },
+  "source_figure_provenance": {
+    "asset": "docs/images/social-preview.png",
+    "sha256": "2b47862190a7094ec76b03609e41079bbe46dc5fe6a0b985d144e9765d9faf50",
+    "width": 1280,
+    "height": 640,
+    "bytes": 87789,
+    "kind": "project evidence composition; no generated model output",
+    "note": "Pinned native model; uncalibrated softmax scores; illustrative input, not an evaluation result",
+    "sources": [
+      {
+        "path": "reports\\provenance\\showcase-inference.json",
+        "sha256": "8b2f4123077fd6756b2ce32ac7f337ab341c0fea636783dcccb79c379151e955"
+      }
+    ],
+    "renderer": "portfolio-integrity-2026-10-15/render_previews.py"
+  },
+  "renderer": {
+    "repository": "kiselyovd/kiselyovd.github.io",
+    "revision": "7efec9a44382677b58cb657843446da104d8bf57",
+    "path": "automation/render_social_previews.py",
+    "sha256": "381021e708028e2bf42f0f97ab32d66df71747fdfced5fda3922bc06f805488b"
+  },
+  "outputs": [
     {
-      "path": "reports\\provenance\\showcase-inference.json",
-      "sha256": "8b2f4123077fd6756b2ce32ac7f337ab341c0fea636783dcccb79c379151e955"
+      "project": "grnti-text-classifier",
+      "theme": "dark",
+      "path": "docs/images/social-preview.png",
+      "sha256": "66fc32151e053673c47ef33c9ee834d8d5e8bcc1b26dffd60f41532afbda8ca7",
+      "bytes": 70222
+    },
+    {
+      "project": "grnti-text-classifier",
+      "theme": "light",
+      "path": "docs/images/social-preview-light.png",
+      "sha256": "22b9b82d92640232e64c4faf10a68984d794ba110618a31e512149befe5ed24d",
+      "bytes": 71091
     }
-  ],
-  "renderer": "portfolio-integrity-2026-10-15/render_previews.py"
+  ]
 }

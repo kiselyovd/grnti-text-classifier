@@ -174,7 +174,7 @@ if __name__ == "__main__":
         theme=gr.themes.Default(
             primary_hue="cyan",
             neutral_hue="slate",
-            font=[gr.themes.GoogleFont("Roboto"), "Arial", "sans-serif"],
+            font=[gr.themes.GoogleFont("Inter"), "Arial", "sans-serif"],
         ).set(
             button_primary_background_fill="*primary_700",
             button_primary_background_fill_dark="*primary_700",
