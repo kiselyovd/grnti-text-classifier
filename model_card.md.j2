@@ -4,79 +4,69 @@ license: mit
 library_name: transformers
 pipeline_tag: text-classification
 base_model: FacebookAI/xlm-roberta-base
-tags:
-  - xlm-roberta
-  - russian-nlp
-  - grnti
-  - multiclass
-  - text-classification
 datasets:
   - ai-forever/ru-scibench-grnti-classification
+tags: [xlm-roberta, russian-nlp, grnti, multiclass]
 widget:
-  - text: "{{ widget_text }}"
+  - text: {{ widget_text | tojson }}
 model-index:
-  - name: {{ repo_id }}
+  - name: kiselyovd/grnti-text-classifier
     results:
       - task:
           type: text-classification
-          name: Top-level GRNTI classification
+          name: GRNTI subject classification
         dataset:
-          name: ru-scibench-grnti-classification
+          name: ru-scibench-grnti-classification pinned source test
           type: ai-forever/ru-scibench-grnti-classification
+          revision: a984f8a65b2e9fae7a347bf7761b0eaad79c73a1
         metrics:
           - type: accuracy
-            value: {{ main_metrics['top1_accuracy']|float|round(4) }}
+            value: {{ main_metrics['top1_accuracy'] }}
             name: Top-1 accuracy
           - type: accuracy
-            value: {{ main_metrics['top5_accuracy']|float|round(4) }}
+            value: {{ main_metrics['top5_accuracy'] }}
             name: Top-5 accuracy
           - type: f1
-            value: {{ main_metrics['macro_f1']|float|round(4) }}
+            value: {{ main_metrics['macro_f1'] }}
             name: Macro F1
-          - type: f1
-            value: {{ main_metrics['weighted_f1']|float|round(4) }}
-            name: Weighted F1
 ---
 
-# {{ repo_id }}
+# Scientific-Text Classification
 
-Production-grade Russian scientific-text classifier: **28 top-level GRNTI codes**.
-Main model: XLM-RoBERTa-base fine-tuned on `ai-forever/ru-scibench-grnti-classification`.
+XLM-RoBERTa assigns Russian scientific titles/abstracts to 28 GRNTI subjects.
 
-## Metrics (test split, n = {{ test_size }}, {{ num_classes }} classes)
+**[Classify your own abstract](https://huggingface.co/spaces/kiselyovd/grnti-text-classifier-demo)** · [Browse source subjects](https://kiselyovd.github.io/grnti-text-classifier/showcase/) · [Code & evaluation](https://github.com/kiselyovd/grnti-text-classifier)
 
-{{ metrics_table }}
+## Evaluation
 
-## Usage
+{{ artifact_contract }}
+
+The replay stores logits, source IDs and targets. Original training membership is unrecorded. Historical ruBERT baseline values (72.9% top-1 / 95.9% top-5 / 72.8% macro F1) were not replayed here. [Protocol and source checksums](https://github.com/kiselyovd/grnti-text-classifier/blob/main/docs/EVALUATION.md).
+
+## Use the native checkpoint
 
 ```python
 from transformers import pipeline
 
-clf = pipeline("text-classification", model="{{ repo_id }}", top_k=5)
-clf("Исследование квантовой электродинамики в кристаллах.")
+classifier = pipeline(
+    "text-classification", model="kiselyovd/grnti-text-classifier",
+    revision="24fbe75c27112612a464935c95465def6af788ef",
+    trust_remote_code=False, top_k=5,
+)
+print(classifier("Исследование квантовой электродинамики в кристаллах.",
+                 truncation=True, max_length=256))
 ```
 
-## Intended use
+The training/inference recipe is **256 tokens**, although the tokenizer capacity is 512. Scores are uncalibrated softmax values. Exact five- and six-digit checkpoint code strings are preserved; `680000` and `683500` share the same stored name and remain separate classes.
 
-This model is trained for Russian-language top-level GRNTI section classification
-(State Rubricator of Scientific and Technical Information). It is not evaluated
-outside Russian scientific text and should not be used for generic multilingual
-classification.
+## Numerical evidence
 
-Do not rely on this model for high-stakes decisions. Outputs are probabilistic
-and subject to training-data biases.
+![Per-class F1 from saved replay](https://raw.githubusercontent.com/kiselyovd/grnti-text-classifier/main/docs/images/per_class_f1.png)
 
-## Training
+![Row-normalised confusion matrix from saved replay](https://raw.githubusercontent.com/kiselyovd/grnti-text-classifier/main/docs/images/confusion_matrix.png)
 
-- Dataset: `ai-forever/ru-scibench-grnti-classification` (MIT, 28 476 train + 2 772 test).
-- Base model: `FacebookAI/xlm-roberta-base`.
-- Baseline: `DeepPavlov/rubert-base-cased`.
-- Precision: bf16-mixed on CUDA.
-- Optimizer: AdamW + linear warmup/decay.
-- Optuna 10-trial sweep for lr/weight_decay/warmup_ratio, then 5-epoch final training with best params.
+## Scope and component terms
 
-Source: https://github.com/kiselyovd/{{ repo_id.split("/")[1] }}
+The model targets Russian scientific subject assignment. Domain shift, overlapping subjects and text truncation limit its use. Visitor examples are illustrations rather than benchmark labels.
 
-## License
-
-MIT.
+Code and the author-declared weights are MIT. The source corpus and XLM-RoBERTa-base separately declare MIT; dependencies retain their terms. [Component details and citation](https://github.com/kiselyovd/grnti-text-classifier/blob/main/docs/EVALUATION.md#component-terms).

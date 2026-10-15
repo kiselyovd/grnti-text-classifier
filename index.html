@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Production-grade Russian multi-class text classifier (GRNTI).">
+        <meta name="description" content="Russian scientific-text classification with pinned artifacts and evaluation provenance.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#grnti-text-classifier" class="md-skip">
+        <a href="#scientific-text-classification" class="md-skip">
           Skip to content
         </a>
       
@@ -253,6 +253,25 @@
     
   
   Showcase
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="EVALUATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Evaluation contract
 
       </a>
     </li>
@@ -468,10 +487,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#at-a-glance" class="md-nav__link">
+  <a href="#evaluation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        At a glance
+        Evaluation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-artifact-and-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current artifact and evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#numerical-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Numerical evidence
       
     </span>
   </a>
@@ -479,54 +526,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#results" class="md-nav__link">
+  <a href="#guides" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Results
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#visualizations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Visualizations
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#navigation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Navigation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#links" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Links
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#intended-use-and-disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Intended use and disclaimer
+        Guides
       
     </span>
   </a>
@@ -556,6 +559,33 @@
     
   
     Showcase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="EVALUATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluation contract
   
 
     
@@ -723,72 +753,46 @@
   
 
 
-<h1 id="grnti-text-classifier">grnti-text-classifier</h1>
-<p><a href="showcase/">Open the interactive showcase</a></p>
-<p><img alt="grnti-text-classifier banner" src="images/banner.jpg" /></p>
-<p>Production-grade Russian scientific-text classifier over 28 top-level GRNTI (State Rubricator of Scientific and Technical Information) classes. Main model <strong>XLM-RoBERTa-base</strong>, fine-tuned with PyTorch Lightning on Russian research abstracts; baseline <strong>ruBERT-base-cased</strong>. Hydra-configured, Optuna-tuned, evaluated with top-1 / top-5 accuracy and macro / weighted F1, served by FastAPI as <code>/classify</code>.</p>
-<blockquote>
-<p><strong>Part of the <a href="https://github.com/kiselyovd#ml-portfolio">kiselyovd ML portfolio</a></strong> - production-grade ML projects sharing one <a href="https://github.com/kiselyovd/ml-project-template">cookiecutter template</a>.</p>
-</blockquote>
-<h2 id="at-a-glance">At a glance</h2>
-<ul>
-<li><strong>Dataset:</strong> <a href="https://huggingface.co/datasets/ai-forever/ru-scibench-grnti-classification">ai-forever/ru-scibench-grnti-classification</a> - 28 476 train / 2 772 test, 28 balanced GRNTI classes, median ~120 tokens under XLM-R tokenizer.</li>
-<li><strong>Main model:</strong> XLM-RoBERTa-base, AdamW + linear warmup+decay, bf16-mixed on CUDA, inverse-frequency class weights.</li>
-<li><strong>Baseline:</strong> ruBERT-base-cased - single-language BERT, same training loop, gives a strong Russian-only reference point.</li>
-<li><strong>Stack:</strong> Python 3.12 / 3.13 · PyTorch Lightning · Transformers · Optuna · FastAPI · Hydra · DVC · MkDocs Material · uv.</li>
-<li><strong>Serving:</strong> FastAPI <code>/classify</code> returns <code>{top1_label, top1_prob, top5, truncated, input_length_tokens, request_id, model_version}</code>.</li>
-</ul>
-<h2 id="results">Results</h2>
-<p>Test set n = 2 772 abstracts across 28 GRNTI sections.</p>
+<h1 id="scientific-text-classification">Scientific-Text Classification</h1>
+<p>Classify Russian scientific abstracts into 28 exact GRNTI codes with XLM-RoBERTa.</p>
+<p><strong><a href="https://huggingface.co/spaces/kiselyovd/grnti-text-classifier-demo">Classify your own abstract</a></strong> · <a href="showcase/">Browse source subjects and examples</a> · <a href="https://huggingface.co/kiselyovd/grnti-text-classifier">Pinned model</a></p>
+<h2 id="evaluation">Evaluation</h2>
+<!-- ARTIFACT-MANIFEST:START -->
+<h3 id="current-artifact-and-evaluation">Current artifact and evaluation</h3>
+<p><strong>Native checkpoint replay on 2,772 pinned source test abstracts</strong></p>
 <table>
 <thead>
 <tr>
-<th>Model</th>
-<th style="text-align: right;">Top-1 accuracy</th>
-<th style="text-align: right;">Top-5 accuracy</th>
-<th style="text-align: right;">Macro F1</th>
-<th style="text-align: right;">Weighted F1</th>
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>XLM-RoBERTa-base (main)</strong></td>
-<td style="text-align: right;"><strong>72.4%</strong></td>
-<td style="text-align: right;"><strong>96.8%</strong></td>
-<td style="text-align: right;"><strong>72.3%</strong></td>
-<td style="text-align: right;"><strong>72.3%</strong></td>
+<td>Top-1 accuracy</td>
+<td style="text-align: right;">72.37%</td>
 </tr>
 <tr>
-<td>ruBERT-base-cased (baseline)</td>
-<td style="text-align: right;">72.9%</td>
-<td style="text-align: right;">95.9%</td>
-<td style="text-align: right;">72.8%</td>
-<td style="text-align: right;">72.8%</td>
+<td>Top-5 accuracy</td>
+<td style="text-align: right;">96.75%</td>
+</tr>
+<tr>
+<td>Macro F1</td>
+<td style="text-align: right;">72.30%</td>
 </tr>
 </tbody>
 </table>
-<p>Baseline slightly ahead on top-1, main ahead by +0.9pp on top-5 - XLM-R's multilingual pre-training gives a better top-k rerank, while the ru-only ruBERT is marginally sharper on the argmax.</p>
-<h2 id="visualizations">Visualizations</h2>
-<p><img alt="Confusion matrix" src="images/confusion_matrix.png" /></p>
-<p>XLM-RoBERTa-base confusion matrix over the 28 GRNTI sections (test set, n = 2 772). Strong diagonal with off-diagonal mass concentrated between semantically adjacent sections.</p>
-<p><img alt="Per-class F1" src="images/per_class_f1.png" /></p>
-<p>Per-class F1 across all 28 GRNTI sections, ranked. Highlights the spread between well-separated and harder, overlapping classes that drive the 72.3% macro-F1.</p>
-<h2 id="navigation">Navigation</h2>
-<ul>
-<li><a href="architecture/">Architecture</a> - data flow, mermaid diagram, and main-vs-baseline design decisions.</li>
-<li><a href="training/">Training</a> - CLI commands, Hydra config layout, Optuna sweep notes, RTX 3080 timing, HF publish runbook.</li>
-<li><a href="serving/">Serving</a> - <code>/classify</code> endpoint contract, Pydantic schemas, curl examples, environment variables.</li>
-<li><a href="api/">API reference</a> - mkdocstrings-generated reference for the <code>grnti_text_classifier</code> package.</li>
-</ul>
-<h2 id="links">Links</h2>
-<ul>
-<li>GitHub: <a href="https://github.com/kiselyovd/grnti-text-classifier">kiselyovd/grnti-text-classifier</a></li>
-<li>Hugging Face model: <a href="https://huggingface.co/kiselyovd/grnti-text-classifier">kiselyovd/grnti-text-classifier</a></li>
-<li>Russian README: <a href="https://github.com/kiselyovd/grnti-text-classifier/blob/main/README.ru.md">README.ru.md</a></li>
-<li>Template: <a href="https://github.com/kiselyovd/ml-project-template">kiselyovd/ml-project-template</a></li>
-</ul>
-<h2 id="intended-use-and-disclaimer">Intended use and disclaimer</h2>
-<p>This model is a <strong>portfolio/research demo</strong> trained on the public ru-scibench-grnti-classification dataset. It is intended for educational purposes, ML-engineering review, and comparison against other baselines on the same dataset. Predictions should not be used as the sole basis for classifying real scientific publications in production systems without human review and domain validation.</p>
+<p>Current pinned source test split. Original training dataset revision and membership were not recorded; held-out independence is not re-established by this replay.</p>
+<p><a href="https://github.com/kiselyovd/grnti-text-classifier/blob/main/reports/replay-native.json">Evaluation record</a> · <a href="https://huggingface.co/kiselyovd/grnti-text-classifier/tree/24fbe75c27112612a464935c95465def6af788ef">Pinned model</a></p>
+<!-- ARTIFACT-MANIFEST:END -->
+
+<p><a href="EVALUATION/">Replay protocol and component terms</a>. The replay saves source IDs, logits and targets. Historical training membership is unrecorded. The baseline's historical top-1/top-5/F1 remains 72.9%/95.9%/72.8%; its arrays have not been replayed here. Those values alone do not explain why the models differ.</p>
+<h2 id="numerical-evidence">Numerical evidence</h2>
+<p><img alt="Per-class F1 from the saved native replay" src="images/per_class_f1.png" /></p>
+<p><img alt="Row-normalised confusion matrix from the saved native replay" src="images/confusion_matrix.png" /></p>
+<p>Both figures are generated from <code>reports/replay-native.json</code> and its hash-bound arrays; code strings preserve the checkpoint's separate agricultural classes.</p>
+<h2 id="guides">Guides</h2>
+<p><a href="architecture/">Architecture</a> · <a href="training/">Training</a> · <a href="serving/">Serving</a> · <a href="api/">API</a> · <a href="EVALUATION/">Reproduce this evaluation</a></p>
 
 
 
