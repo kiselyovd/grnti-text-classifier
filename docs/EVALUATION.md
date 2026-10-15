@@ -13,6 +13,7 @@ Use the project-declared environment (`uv sync --frozen --all-groups`). Obtain o
 ```bash
 uv run --frozen --all-groups python scripts/replay_native.py --test-jsonl data/raw/test.jsonl
 python scripts/artifact_manifest.py --check
+uv run --frozen --all-groups python scripts/plot_replay.py
 ```
 
 The replay checks source bytes and unique IDs, maps exact source codes to checkpoint indices, applies the native 256-token transform and saves logits/targets/IDs plus aggregate and per-class metrics. Visitor examples in the Space are illustrations rather than labelled evaluation inputs. Model scores are uncalibrated softmax values.

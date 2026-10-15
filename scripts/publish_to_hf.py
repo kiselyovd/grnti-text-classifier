@@ -107,7 +107,7 @@ def main() -> None:
     parser.add_argument("--repo-id", default="kiselyovd/grnti-text-classifier")
     parser.add_argument("--main-dir", default="artifacts/main/hf")
     parser.add_argument("--baseline-dir", default="artifacts/baseline/hf")
-    parser.add_argument("--metrics", default="reports/metrics.json")
+    parser.add_argument("--metrics", default="reports/replay-native.json")
     parser.add_argument("--summary", default="reports/metrics_summary.json")
     parser.add_argument("--widget", default="data/widget/sample_payload.json")
     parser.add_argument("--template", default="docs/model_card.md.j2")
@@ -125,6 +125,7 @@ def main() -> None:
     # Load inputs
     main_metrics: dict[str, Any] = _load_json(Path(args.metrics))
     summary: dict[str, Any] = _load_json(Path(args.summary))
+    main_metrics = main_metrics.get("metrics", main_metrics)
 
     if not main_metrics:
         raise SystemExit(
@@ -135,7 +136,11 @@ def main() -> None:
     if not required.issubset(main_metrics) or main_metrics["n"] <= 0:
         raise SystemExit("Evaluation report is incomplete or has no evaluated examples")
 
+    from artifact_manifest import render, validate
+
+    manifest, values = validate(Path.cwd())
     context: dict[str, Any] = {
+        "artifact_contract": render(manifest, values),
         "repo_id": args.repo_id,
         "widget_text": _widget_text(Path(args.widget)),
         "main_metrics": main_metrics,

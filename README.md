@@ -13,7 +13,7 @@ Classify scientific abstracts into 28 GRNTI subject codes. XLM-RoBERTa is the ma
 <!-- ARTIFACT-MANIFEST:START -->
 ### Current artifact and evaluation
 
-**Historical model-card results; full numerical replay unavailable**
+**Native checkpoint replay on 2,772 pinned source test abstracts**
 
 | Metric | Value |
 |---|---:|
@@ -21,9 +21,9 @@ Classify scientific abstracts into 28 GRNTI subject codes. XLM-RoBERTa is the ma
 | Top-5 accuracy | 96.75% |
 | Macro F1 | 72.30% |
 
-Imported values from the pinned historical model card. Numerical predictions and per-class report arrays are not tracked; this task verified native inference, not a full test-set replay.
+Current pinned source test split. Original training dataset revision and membership were not recorded; held-out independence is not re-established by this replay.
 
-[Evaluation record](https://github.com/kiselyovd/grnti-text-classifier/blob/main/reports/reported-native.json) · [Pinned model](https://huggingface.co/kiselyovd/grnti-text-classifier/tree/24fbe75c27112612a464935c95465def6af788ef)
+[Evaluation record](https://github.com/kiselyovd/grnti-text-classifier/blob/main/reports/replay-native.json) · [Pinned model](https://huggingface.co/kiselyovd/grnti-text-classifier/tree/24fbe75c27112612a464935c95465def6af788ef)
 <!-- ARTIFACT-MANIFEST:END -->
 
 Baseline ruBERT reports 72.9% top-1 / 95.9% top-5 / 72.8% macro F1 in the historical source card; its prediction arrays are unavailable. These operating points do not explain their difference.

@@ -37,12 +37,12 @@
     "scope": "Current source pinned for inspection; historical training dataset revision was not recorded."
   },
   "evaluation": {
-    "status": "reported",
-    "label": "Historical model-card results; full numerical replay unavailable",
-    "scope": "Imported values from the pinned historical model card. Numerical predictions and per-class report arrays are not tracked; this task verified native inference, not a full test-set replay.",
+    "status": "replayed_reconstructed",
+    "label": "Native checkpoint replay on 2,772 pinned source test abstracts",
+    "scope": "Current pinned source test split. Original training dataset revision and membership were not recorded; held-out independence is not re-established by this replay.",
     "training_membership_verified": false,
-    "report": "reports/reported-native.json",
-    "report_sha256": "192a110adfde7a069a989efc30d12cd7e9079656d7e7b4e14f19f12279c6b182",
+    "report": "reports/replay-native.json",
+    "report_sha256": "09ddba01bf9a7db3c3258e17c1bc415c334c506c0a681b0350bcc1615ad3255b",
     "metrics": [
       {
         "name": "Top-1 accuracy",
