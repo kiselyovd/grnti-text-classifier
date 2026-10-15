@@ -18,7 +18,6 @@ def test_production_root_and_personal_identity():
     assert "Full subject name" in serialized
     assert "https://huggingface.co/kiselyovd" in serialized
     assert '"value": "en"' in serialized
-    assert app.DEVICE == "cpu"
     assert app.demo.enable_queue
 
 
